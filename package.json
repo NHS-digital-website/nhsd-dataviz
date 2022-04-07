@@ -1,0 +1,35 @@
+{
+  "name": "nhsd-visualisations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "visualisations.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "export-server": "set port=3001 && node export-server/server.js",
+    "aws-deploy": "npx serverless deploy"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^7.3.0",
+    "express": "^4.17.3",
+    "playwright-aws-lambda": "^0.7.0",
+    "playwright-core": "^1.20.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "core-js": "^3.21.1",
+    "rollup": "^2.70.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "serverless": "^3.12.0",
+    "terser": "^5.12.0"
+  },
+  "browserslist": "> 0.25%, not dead"
+}
