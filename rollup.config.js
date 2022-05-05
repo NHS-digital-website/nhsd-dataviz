@@ -27,12 +27,12 @@ export default [{
       file: 'dist/visualisations.js',
       format: 'iife',
       name: 'nhsdViz',
-      exports: 'default',
+      exports: 'named',
     }, {
       file: 'dist/visualisations.cjs.js',
       format: 'cjs',
       name: 'nhsdViz',
-      exports: 'default',
+      exports: 'named',
     }],
     plugins: [
       nodeResolve(),

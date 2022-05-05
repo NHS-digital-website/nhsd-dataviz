@@ -2,90 +2,65 @@ import "core-js/stable";
 import "regenerator-runtime/runtime"
 
 import * as d3 from "d3";
-import config from "./config";
-import xiny from './visualisations/xiny';
+import chartStyles from './helpers/chart-styles';
+import chartTitle from './content/chart-title';
+import content from './content/chart-content';
+import changeText from './content/change-text';
+import sourceText from './content/source-text';
+import introText from "./content/intro-text";
+import vizChart from "./visualisations/chart";
+import * as palette from './helpers/palette';
 
 const generateId = () => Math.random().toString(16).slice(2);
 
-async function render(selector, viz, options) {
-    if (!options) {
-        throw new Error("Visualisation options not set");
-    }
-
+async function render(selector, options) {
     const visualisationId = generateId();
+    options.visualisationId = visualisationId;
+
+    options.vizType = options.vizType || 'pie';
 
     const target = d3.select(selector).html("");
 
+    chartStyles(target, options);
+
     const vizWrapper = target.insert('article')
     .attr('id', `nhsd-viz-${visualisationId}`)
-    .attr('class', `nhsd-viz`)
-    .style('padding', `${config.padding}px`);
+    .attr('class', `nhsd-viz`);
 
-    if (options.title) {
-        vizWrapper.attr('aria-labelledby', `nhsd-viz-${visualisationId}-title`)
-        .append('h1')
-        .attr('id', `nhsd-viz-${visualisationId}-title`)
-        .classed('nhsd-viz-title', true)
-        .text(options.title);
-    }
+    vizWrapper.insert('div')
+    .attr('class', `nhsd-viz-content`);
 
-    if (options.desc) {
-        vizWrapper.attr('aria-describedby', `nhsd-viz-${visualisationId}-description`)
-        .append('p')
-        .attr('id', `nhsd-viz-${visualisationId}-description`)
-        .classed('nhsd-viz-body', true)
-        .text(options.desc);
-    }
+    chartTitle(vizWrapper, options);
 
-    const svg = vizWrapper.insert('svg')
-    .attr('xmlns', 'http://www.w3.org/2000/svg')
-    .attr('preserveAspectRatio','xMidYMid meet')
-    .attr('aria-hidden', true)
-    .attr('width', width)
-    .style('width', '100%');
+    introText(vizWrapper, options);
 
-    const width = svg.node().getBoundingClientRect().width;
-    let yPos = 0;
+    vizWrapper.select('.nhsd-viz-content')
+        .insert('div')
+        .classed('nhsd-viz-chart-content-wrapper', true)
+        .insert('div')
+        .classed('nhsd-viz-chart', true);
 
-    if (viz == 'xiny') {
-        try {
-            const vizSvg = await xiny(vizWrapper, {...options, width});
-            yPos += vizSvg.node().getBBox().height;
-            svg.attr("viewBox", [0, 0, width, yPos]);
-            await loadImages(svg);
-        } catch (e) {
-            console.error(e);
-        }
-    }
+    await vizChart(vizWrapper, options);
 
-    if (options.source && options.source.text) {
-        const element = vizWrapper.append('p')
-        .classed('nhsd-viz-body', true)
-        .text('Source: ');
-
-        if (options.source.href) {
-            element.append('a')
-            .attr('href', options.source.href)
-            .text(options.source.text);
-        } else {
-            element.text(options.source.text);
-        }
-    }
+    content(vizWrapper, options);
+    changeText(vizWrapper, options);
+    sourceText(vizWrapper, options);
 
     return vizWrapper.node();
 }
 
-async function loadImages(svg) {
-    const imageLoads = [];
-    svg.selectAll('image').each(function() {
-        const image = d3.select(this);
-        imageLoads.push(new Promise(res => image.on('load', () => res())));
-        image.attr('xlink:href', image.attr('data-href'));
-    });
-    await Promise.all(imageLoads);
+export function chart(selector, options) {
+    if (d3.select(selector).empty()) {
+        throw new Error(`Selector "${selector}" not found`);
+    }
+    if (!options) {
+        throw new Error("Visualisation options not set");
+    }
+
+    window.addEventListener('resize', () => render(selector, options));
+    render(selector, options);
 }
 
-export default function viz(selector, viz, options) {
-    window.addEventListener('resize', () => render(selector, viz, options));
-    return render(selector, viz, options);
+export { 
+    palette
 }

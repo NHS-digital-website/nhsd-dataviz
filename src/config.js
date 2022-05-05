@@ -1,3 +1,4 @@
 export default {
-    padding: 10
+    padding: '2em',
+    desktopViewport: '1024px',
 }

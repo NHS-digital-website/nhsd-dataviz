@@ -5,6 +5,8 @@ provider:
   name: aws
   runtime: nodejs14.x
   timeout: 10
+  region: us-east-1
+  profile: nhsd-visualisations
 
 functions:
   index:
@@ -18,9 +20,13 @@ package:
   patterns:
     - '!node_modules/@babel/**'
     - '!node_modules/@rollup/**'
+    - '!node_modules/@types/**'
     - '!node_modules/core-js/**'
     - '!node_modules/d3*/**'
     - '!node_modules/express/**'
     - '!node_modules/serverless/**'
+    - '!node_modules/terser/**'
     - '!src/**'
     - '!export-server/**'
+    - '!package.json'
+    - '!package-lock.json'

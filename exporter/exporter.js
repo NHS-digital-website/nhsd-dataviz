@@ -10,29 +10,31 @@ module.exports = async function exportViz(data = {}) {
   if (!data) throw new Error("Visualisation options not set");
   if (!data.format) throw new Error("Export format not set");
 
-  const vizType = data.vizType || 'xiny';
-
   const page = await browser.newPage();
+  page.setViewportSize({
+    width: 1060,
+    height: 768,
+  });
   await page.goto(`file://${path.join(__dirname, 'template.html')}`);
 
-  const error = await page.evaluate(async ([vizType, data]) => {
+  const error = await page.evaluate(async ([chartData]) => {
     try {
-      await nhsdViz('#viz', vizType, data);
+      await nhsdViz.chart('#viz', chartData);
     } catch(e) {
       return e.message;
     }
-  }, [vizType, data.data]);
+  }, [data]);
 
   if (error) {
     throw new Error(error);
   }
 
-  const element = await page.$('#viz');
-
   let fileInfo = {};
   let buffer;
+  let element;
   switch(data.format) {
     case 'png':
+      element = await page.$('#viz article');
       buffer = await element.screenshot();
       fileInfo = {
         file: uuid() + '.png',
@@ -41,6 +43,7 @@ module.exports = async function exportViz(data = {}) {
       };
       break;
     case 'jpg':
+      element = await page.$('#viz article');
       buffer = await element.screenshot();
       fileInfo = {
         file: uuid() + '.jpg',
@@ -49,6 +52,7 @@ module.exports = async function exportViz(data = {}) {
       };
       break;
     default:
+      element = await page.$('#viz');
       const outerHtmlProp = await element.getProperty('innerHTML');
       buffer = await outerHtmlProp.jsonValue();
       fileInfo = {
