@@ -12,7 +12,7 @@
             }
             #preview {
                 width: 100%;
-                height: 100%;
+                min-height: 600px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -50,34 +50,24 @@
                             <label class="nhsd-t-form-label-s" for="visualisation-options">Visualisation Options</label>
                             <textarea class="nhsd-t-form-textarea-s" id="visualisation-options" autocomplete="off">
 {
-    "title": "How much do they drink?",
-    "desc": "Median units",
-    "source": {
-        "text": "NHS Digital",
-        "href": "#"
+    "vizType": "pie",
+    "data": {
+        "date": "2022",
+        "percent": 15,
+        "subject": "adults",
+        "description": "had a possible eating disorder",
+        "change": {
+            "percent": 3,
+            "date": "2021"
+        }
     },
-    "data": [{
-        "x": 1,
-        "y": 10,
-        "img": "http://localhost:3001/public/bottle.svg",
-        "axisTitle": "2020"
-    }, {
-        "x": 1.5,
-        "y": 10,
-        "img": "http://localhost:3001/public/bottle.svg",
-        "axisTitle": "2021"
-    }, {
-        "x": 4,
-        "y": 10,
-        "img": "http://localhost:3001/public/bottle.svg",
-        "axisTitle": "2022"
-    }]
+    "palette": "default"
 }</textarea>
                         </div>
                         <div class="nhsd-t-form-group">
                             <label class="nhsd-t-form-label-s" for="format">Image Format</label>
                             <div class="nhsd-t-form-control">
-                                <select class="nhsd-t-form-select" type="text" id="format">
+                                <select class="nhsd-t-form-select" id="format">
                                     <option value="png">PNG</option>
                                     <option value="jpg">JPG</option>
                                     <option value="html">HTML/SVG</option>
