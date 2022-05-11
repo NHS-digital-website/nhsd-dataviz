@@ -4,6 +4,6 @@ export default function (vizWrapper, options) {
     .append('div')
     .classed('nhsd-viz-body', true)
     .classed('nhsd-viz-intro-text', true)
-    .text(`In ${options.data.date}`);
+    .text(`testing lambda`);
   }
 }
