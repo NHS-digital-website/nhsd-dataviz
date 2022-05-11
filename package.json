@@ -5,9 +5,7 @@
   "main": "visualisations.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "export-server": "set port=3001 && node export-server/server.js",
-    "aws-deploy": "npx serverless deploy",
-    "aws-deploy-prod": "npx serverless deploy --stage production"
+    "export-server": "set port=3001 && node export-server/server.js"
   },
   "author": "",
   "license": "ISC",
