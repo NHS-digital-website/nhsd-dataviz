@@ -19,7 +19,7 @@ module.exports = async function exportViz(data = {}) {
 
   const error = await page.evaluate(async ([chartData]) => {
     try {
-      await nhsdViz.chart('#viz', chartData);
+      await nhsdviz.chart('#viz', chartData);
     } catch(e) {
       return e.message;
     }
@@ -29,12 +29,14 @@ module.exports = async function exportViz(data = {}) {
     throw new Error(error);
   }
 
+  //await page.waitForTimeout(2000);
+
   let fileInfo = {};
   let buffer;
   let element;
   switch(data.format) {
     case 'png':
-      element = await page.$('#viz article');
+      element = await page.$('#viz');
       buffer = await element.screenshot();
       fileInfo = {
         file: uuid() + '.png',
@@ -43,7 +45,7 @@ module.exports = async function exportViz(data = {}) {
       };
       break;
     case 'jpg':
-      element = await page.$('#viz article');
+      element = await page.$('#viz');
       buffer = await element.screenshot();
       fileInfo = {
         file: uuid() + '.jpg',

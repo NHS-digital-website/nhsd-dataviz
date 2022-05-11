@@ -1,20 +1,36 @@
 import * as d3 from "d3";
+import { VisualisationFullOptions } from "../../visualisations";
 
-export default function(svg, options) {
-  var width = options.width;
+export interface PieOptions extends VisualisationFullOptions {
+  vizType: "pie",
+  data: VisualisationFullOptions['data'] & {
+    percent: number,
+  },
+}
+
+export default function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, options: PieOptions) {
+  var width = 300;
   var radius = width / 2;
   var arrowSize = radius * 0.08;
   var arrowOffset = radius * 0.02;
   var selectedOffset = radius * 0.07;
   var arcRadius = radius - selectedOffset - arrowSize - arrowOffset;
 
+  if (!options.data || !options.data.percent) return;
+
+  const svg = vizChart.insert('svg')
+  .attr('xmlns', 'http://www.w3.org/2000/svg')
+  .attr('preserveAspectRatio','xMidYMid meet')
+  .attr("viewBox", [0, 0, width, width])
+  .attr('aria-hidden', true)
+  .style('width', '100%');
+
   var arc = d3.arc()
     .outerRadius(arcRadius)
     .innerRadius(0);
 
   var pie = d3.pie()
-    .sortValues((a) => a)
-    .value(d => d);
+    .sortValues((a) => a);
 
   var svgGroup = svg
     .classed('nhsd-viz-pie', true)
@@ -29,8 +45,8 @@ export default function(svg, options) {
     .append("g");
 
   emptyPies.append("path")
-  .attr("d", d => arc(d))
-  .attr("transform", (d, i) => {
+  .attr("d", arc)
+  .attr("transform", (d: d3.DefaultArcObject, i) => {
     if (i > 0) return `translate(0,0)`;
 
     var angle = (d.startAngle + d.endAngle) / 2;

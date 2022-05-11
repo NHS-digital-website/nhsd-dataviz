@@ -51,8 +51,8 @@
                             <textarea class="nhsd-t-form-textarea-s" id="visualisation-options" autocomplete="off">
 {
     "vizType": "pie",
+    "introText": "In 2022",
     "data": {
-        "date": "2022",
         "percent": 15,
         "subject": "adults",
         "description": "had a possible eating disorder",
@@ -90,7 +90,7 @@
                 </div>
                 <div class="nhsd-t-col-6 nhsd-!t-margin-top-6">
                     <h2 class="nhsd-t-heading-l">Preview</h2>
-                    <div id="preview" class="nhsd-!t-bg-pale-grey nhsd-!t-padding-2"></div>
+                    <div id="preview" class="nhsd-!t-bg-pale-grey nhsd-!t-padding-1"></div>
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@
                     method: 'POST',
                     body: JSON.stringify({
                         format,
-                        data: JSON.parse(myCodeMirror.getValue()),
+                        ...JSON.parse(myCodeMirror.getValue()),
                     }),
                     headers: {
                         'Content-Type': 'application/json'

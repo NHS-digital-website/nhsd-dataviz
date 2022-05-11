@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "types" : ["d3"],
+    "lib": [
+      "es2015.promise",
+      "es5",
+      "dom"
+    ]
+  }
+}

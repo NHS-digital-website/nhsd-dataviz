@@ -1,4 +1,16 @@
-let colourPalette = {
+export type Palette = {
+  primary: string,
+  secondary: string,
+  background: string,
+  text: string,
+  text2: string,
+};
+
+export type Pallettes = {
+  [key: string]: Palette
+}
+
+let colourPalette: Pallettes = {
   default: {
     primary: '#003087',
     secondary: '#005bbb',
@@ -22,11 +34,11 @@ let colourPalette = {
   }
 }
 
-export function addPalette(name, colours) {
+export function createPalette(name: string, colours: Palette) {
   colourPalette[name] = colours;
 }
 
-export function getPalette(palette = 'default') {
+export function getPalette(palette?: string | (Palette & {basePalette?: string})) {
   let paletteId = 'default';
   if (typeof palette == "string" && colourPalette[palette]) {
     paletteId = palette;
