@@ -6,7 +6,6 @@ provider:
   runtime: nodejs14.x
   timeout: 10
   region: us-east-1
-  profile: nhsd-visualisations
 
 functions:
   index:
