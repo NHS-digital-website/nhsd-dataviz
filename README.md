@@ -110,3 +110,43 @@ nhsdviz.createPalette(<i>name</i>, <i><a href="#paletteObject">palette</a></i>)
 
 ### Example
 https://jsfiddle.net/LEJA3/k2tL0pcq/
+
+--------
+
+## Export Server
+
+To provide a fallback where JavaScript isn't available the project includes an export service which allows charts to be exported in HTML/SVG, PNG, or JPG formats.
+
+To start the export server:
+
+```
+npm install
+npm run export-server
+```
+
+Once started, a web interface should be available at <a href="http://localhost:3001" target="_blank">http://localhost:3001.</a>
+
+Alternatively, charts can be exported via the API. To do this send a POST request to http://localhost:3001 and pass in the <a href="#optionsObject">chart options</a> in the request body.
+
+Optionally, a `format` property can be specified with the values, `jpg`, `png`, or `svg` depending on your desired output format.
+
+### Example request
+
+```
+curl --location --request POST 'http://localhost:3001/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "vizType": "pie",
+    "data": {
+        "date": "2022",
+        "percent": 15,
+        "subject": "adults",
+        "description": "had a possible eating disorder",
+        "change": {
+            "percent": 3,
+            "date": "2021"
+        }
+    },
+    "format": "png"
+}'
+```
