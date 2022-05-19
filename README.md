@@ -60,20 +60,20 @@ The following code snippet demonstrates loading the data visualisation library a
 
 ## Create a chart
 
-nhsdviz.chart(<i>selector</i>, <i>options</i>)
+nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 
-### Options object
+### <a name="optionsObject" href="#optionsObject">#</a> Options object
 
-| Property  | Value                          | Description              |
-|-----------|--------------------------------|--------------------------|
-| vizType   | "pie" \| "doughnut" \| "icon"  | Chart type               |
-| title     | String                         | Chart title text         |
-| introText | String                         | Chart introductory text  |
-| data      | Data object                    | Chart data               |
-| source    | { text: String, href: String } | Source text              |
-| palette   | String                         | Chart palette            |
+| Property  | Value                                    | Description              |
+|-----------|------------------------------------------|--------------------------|
+| vizType   | "pie" \| "doughnut" \| "icon"            | Chart type               |
+| title     | String                                   | Chart title text         |
+| introText | String                                   | Chart introductory text  |
+| data      | <a href="#dataObject">Data object</a> | Chart data               |
+| source    | { text: String, href: String }           | Source text              |
+| palette   | String                                   | Chart palette            |
 
-### Data object
+### <a name="dataObject" href="#dataObject">#</a> Data object
 
 | Property     | Value                                           | Description                          |
 |--------------|-------------------------------------------------|--------------------------------------|
@@ -83,11 +83,22 @@ nhsdviz.chart(<i>selector</i>, <i>options</i>)
 | percent      | number                                          | Chart percent value (pie & doughnut) |
 | ratio        | { numerator: number, denominator: number }      | Chart ratio value (icon)             |
 
+### Examples
+
+#### Pie Chart
+https://jsfiddle.net/LEJA3/cq8rbs12/
+
+#### Doughnut Chart
+https://jsfiddle.net/LEJA3/f4o6v2xh/
+
+#### Icon Chart
+https://jsfiddle.net/LEJA3/kroLbf4z/
+
 ## Colour palette
 
-nhsdviz.createPalette(<i>name</i>, <i>palette</i>)
+nhsdviz.createPalette(<i>name</i>, <i><a href="#paletteObject">palette</a></i>)
 
-### Palette object
+### <a name="paletteObject" href="#paletteObject">#</a> Palette object
 
 | Property     | Value                                           | Description                          |
 |--------------|-------------------------------------------------|--------------------------------------|
@@ -96,3 +107,6 @@ nhsdviz.createPalette(<i>name</i>, <i>palette</i>)
 | background   | String (Hex colour code)                        | Background chart colour              |
 | text         | String (Hex colour code)                        | Main text colour                     |
 | text2        | String (Hex colour code)                        | Secondary text colour                |
+
+### Example
+https://jsfiddle.net/LEJA3/k2tL0pcq/
