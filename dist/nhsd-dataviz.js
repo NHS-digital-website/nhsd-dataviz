@@ -18985,7 +18985,7 @@ var nhsdviz = (function (exports) {
           .outerRadius(arcRadius)
           .innerRadius(0);
       var pie = pie$1()
-          .sortValues(function (a) { return a; });
+          .sortValues(function (a, b) { return a - b; });
       var svgGroup = svg
           .classed('nhsd-viz-pie', true)
           .append("g")
@@ -19045,7 +19045,7 @@ var nhsdviz = (function (exports) {
           .outerRadius(arcRadius)
           .innerRadius(arcRadius * 0.75);
       var pie = pie$1()
-          .sortValues(function (a) { return a; });
+          .sortValues(function (a, b) { return a - b; });
       var svgGroup = svg
           .classed('nhsd-viz-doughnut', true)
           .append("g")

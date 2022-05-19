@@ -30,7 +30,7 @@ export default function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLElement
     .innerRadius(0);
 
   var pie = d3.pie()
-    .sortValues((a) => a);
+    .sortValues((a, b) => a - b);
 
   var svgGroup = svg
     .classed('nhsd-viz-pie', true)
