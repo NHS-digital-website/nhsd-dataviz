@@ -20,5 +20,8 @@ node_modules/
 # WebStorm
 .idea/
 
+# vscode
+.vscode/
+
 # Serverless
 .serverless/

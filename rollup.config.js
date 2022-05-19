@@ -2,6 +2,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 import { babel } from '@rollup/plugin-babel';
+import typescript from '@rollup/plugin-typescript';
 
 const removeCircularDependencyWarning = function ( message ) {
   if (message.code === 'CIRCULAR_DEPENDENCY') {
@@ -11,46 +12,56 @@ const removeCircularDependencyWarning = function ( message ) {
 };
 
 export default [{
-  input: 'src/visualisations.js',
-  output: {
-    file: 'dist/visualisations.module.js',
-    format: 'esm',
-  },
+  input: 'src/visualisations.ts',
+  output: [{
+    file: 'dist/nhsd-dataviz.min.js',
+    format: 'iife',
+    name: 'nhsdviz',
+    exports: 'named',
+  }],
   plugins: [
     nodeResolve(),
+    typescript(),
     commonjs(),
+    babel({ 
+      babelHelpers: 'bundled',
+      presets: [
+        [
+          "@babel/preset-env",
+          {
+            "useBuiltIns": "entry",
+            "corejs": "3.21.1"
+          }
+        ]
+      ]
+    }),
+    terser(),
   ],
   onwarn: removeCircularDependencyWarning,
-}, {
-    input: 'src/visualisations.js',
-    output: [{
-      file: 'dist/visualisations.js',
-      format: 'iife',
-      name: 'nhsdViz',
-      exports: 'named',
-    }, {
-      file: 'dist/visualisations.cjs.js',
-      format: 'cjs',
-      name: 'nhsdViz',
-      exports: 'named',
-    }],
-    plugins: [
-      nodeResolve(),
-      commonjs(),
-      babel({ 
-        babelHelpers: 'bundled',
-        presets: [
-          [
-            "@babel/preset-env",
-            {
-              "useBuiltIns": "entry",
-              "corejs": "3.21.1"
-            }
-          ]
+},{
+  input: 'src/visualisations.ts',
+  output: [{
+    file: 'dist/nhsd-dataviz.js',
+    format: 'iife',
+    name: 'nhsdviz',
+    exports: 'named',
+  }],
+  plugins: [
+    nodeResolve(),
+    typescript(),
+    commonjs(),
+    babel({ 
+      babelHelpers: 'bundled',
+      presets: [
+        [
+          "@babel/preset-env",
+          {
+            "useBuiltIns": "entry",
+            "corejs": "3.21.1"
+          }
         ]
-      }),
-      terser(),
-    ],
-    onwarn: removeCircularDependencyWarning,
-  }
-];
+      ]
+    }),
+  ],
+  onwarn: removeCircularDependencyWarning,
+}];
