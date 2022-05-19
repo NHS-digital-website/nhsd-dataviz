@@ -1,3 +1,3 @@
-export default function(desktopViewport: string) {
-  return window.innerWidth <= parseInt(desktopViewport);
+export default function(desktopViewport: number) {
+  return window.innerWidth <= desktopViewport;
 }

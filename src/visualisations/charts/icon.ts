@@ -10,7 +10,7 @@ export interface IconOptions extends VisualisationFullOptions {
       denominator: number,
     }
   },
-  desktopViewport: string,
+  desktopViewport: number,
   icon?: string,
 }
 

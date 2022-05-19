@@ -1,12 +1,12 @@
 type Config = {
     padding: string,
-    desktopViewport: string,
+    desktopViewport: number,
     defaultWidth: number,
 };  
 
 const defaultConf: Config = {
     padding: '2em',
-    desktopViewport: '1024px',
+    desktopViewport: 1024,
     defaultWidth: 300,
 };
 
