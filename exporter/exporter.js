@@ -8,7 +8,9 @@ module.exports = async function exportViz(data = {}) {
   });
 
   if (!data) throw new Error("Visualisation options not set");
-  if (!data.format) throw new Error("Export format not set");
+  if (!data.format) {
+    data.format = "jpg";
+  }
 
   const page = await browser.newPage();
   page.setViewportSize({
@@ -28,8 +30,6 @@ module.exports = async function exportViz(data = {}) {
   if (error) {
     throw new Error(error);
   }
-
-  //await page.waitForTimeout(2000);
 
   let fileInfo = {};
   let buffer;
