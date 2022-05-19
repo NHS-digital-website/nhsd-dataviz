@@ -64,14 +64,15 @@ nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 
 ### <a name="optionsObject" href="#optionsObject">#</a> Options object
 
-| Property  | Value                                    | Description              |
-|-----------|------------------------------------------|--------------------------|
-| vizType   | "pie" \| "doughnut" \| "icon"            | Chart type               |
-| title     | String                                   | Chart title text         |
-| introText | String                                   | Chart introductory text  |
-| data      | <a href="#dataObject">Data object</a> | Chart data               |
-| source    | { text: String, href: String }           | Source text              |
-| palette   | String                                   | Chart palette            |
+| Property          | Value                                    | Description                              |
+|-------------------|------------------------------------------|------------------------------------------|
+| vizType           | "pie" \| "doughnut" \| "icon"            | Chart type                               |
+| title             | String                                   | Chart title text                         |
+| introText         | String                                   | Chart introductory text                  |
+| data              | <a href="#dataObject">Data object</a>    | Chart data                               |
+| source            | { text: String, href: String }           | Source text                              |
+| palette           | String                                   | Chart palette                            |
+| desktopViewport   | number (px)                              | Desktop viewport (default: 1024)         |
 
 ### <a name="dataObject" href="#dataObject">#</a> Data object
 

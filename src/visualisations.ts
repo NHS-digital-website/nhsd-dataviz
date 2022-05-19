@@ -43,13 +43,14 @@ export interface VisualisationOptions {
         text: string,
         href?: string,
     },
+    desktopViewport?: number,
 };
 
 export interface VisualisationFullOptions extends VisualisationOptions {
     vizType: "pie" | "doughnut" | "icon",
     visualisationId: string,
     fontSize?: string,
-    desktopViewport?: string
+    desktopViewport: number
 }
   
 async function render(selector: string, options: VisualisationOptions) {
@@ -98,8 +99,6 @@ export async function chart(selector: string, options: VisualisationOptions) {
     window.addEventListener('resize', debouncedRender);
     await render(selector, options);
 }
-
-
 
 export {
     createPalette

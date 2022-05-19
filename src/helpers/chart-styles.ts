@@ -7,7 +7,7 @@ interface StyleOptions extends VisualisationOptions {
   visualisationId: string,
   palette?: (Palette & {basePalette?: string}),
   fontSize?: string,
-  desktopViewport?: string
+  desktopViewport: number
 }
 
 export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, options: StyleOptions) {
@@ -132,7 +132,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
       bottom: 0.6em;
     }
 
-    @media (max-width: ${options.desktopViewport || config.desktopViewport}) {
+    @media (max-width: ${options.desktopViewport}px) {
       #nhsd-viz-${options.visualisationId} {
         font-size: 0.8em;
       }
@@ -271,7 +271,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
       opacity: 0.8;
     }
 
-    @media (max-width: ${options.desktopViewport || config.desktopViewport}) {
+    @media (max-width: ${options.desktopViewport}px) {
       #nhsd-viz-${options.visualisationId} .nhsd-viz-chart {
         max-width: 28em;
       }
