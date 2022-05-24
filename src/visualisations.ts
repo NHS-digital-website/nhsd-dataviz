@@ -1,6 +1,3 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime"
-
 import * as d3 from "d3";
 import chartStyles from './helpers/chart-styles';
 import chartTitle from './content/chart-title';
@@ -14,7 +11,7 @@ import debounce from './helpers/debounce';
 import optionDefaults from './helpers/option-defaults';
 
 export interface VisualisationOptions {
-    vizType?: "pie" | "doughnut" | "icon",
+    vizType?: "pie" | "doughnut" | "icon" | "stat",
     title?: string,
     introText?: string,
     data: {
@@ -30,7 +27,7 @@ export interface VisualisationOptions {
         ratio?: {
             numerator: number,
             denominator: number,
-        }
+        },
     } & ({
         percent: number
     } | {
@@ -38,6 +35,8 @@ export interface VisualisationOptions {
             numerator: number,
             denominator: number,
         }
+    } | {
+        quantity: number
     }),
     source?: {
         text: string,
@@ -47,7 +46,7 @@ export interface VisualisationOptions {
 };
 
 export interface VisualisationFullOptions extends VisualisationOptions {
-    vizType: "pie" | "doughnut" | "icon",
+    vizType: "pie" | "doughnut" | "icon" | "stat",
     visualisationId: string,
     fontSize?: string,
     desktopViewport: number
@@ -73,10 +72,7 @@ async function render(selector: string, options: VisualisationOptions) {
 
     vizWrapper.select('.nhsd-viz-content')
         .insert('div')
-        .classed('nhsd-viz-chart-content-wrapper', true)
-        .insert('div')
-        .classed('nhsd-viz-chart', true)
-        .attr('aria-hidden', true);
+        .classed('nhsd-viz-chart-content-wrapper', true);
 
     await vizChart(vizWrapper, fullOptions);
 

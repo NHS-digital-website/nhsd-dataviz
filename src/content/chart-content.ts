@@ -6,28 +6,31 @@ export default function (vizWrapper: d3.Selection<d3.BaseType, unknown, HTMLElem
     .append('div')
     .classed('nhsd-viz-chart-content', true);
 
-    let chartText = '';
+    let chartHeadline = '';
+    let chartDesc = options.data.description;
+
     if (options.data.percent) {
       if (options.vizType == 'doughnut') {
-        chartText = `<span class="nhsd-viz-sr-only">${options.data.percent}%</span>`;
+        chartHeadline = `<span class="nhsd-viz-sr-only">${options.data.percent}%</span>`;
       } else {
-        chartText = `${options.data.percent}%`;
+        chartHeadline = `${options.data.percent}%`;
       }
-      chartText += ` of ${options.data.subject}`;
+      chartHeadline += ` of ${options.data.subject}`;
     } else if (options.data.ratio) {
-        chartText = `${options.data.ratio.numerator} in ${options.data.ratio.denominator} ${options.data.subject}`;
+      chartHeadline = `${options.data.ratio.numerator} in ${options.data.ratio.denominator} ${options.data.subject}`;
     } else if (options.data.quantity) {
-        chartText = `${options.data.quantity}`;
+      chartHeadline = `${options.data.quantity.toLocaleString('en-gb')}`;
+      chartDesc = `${options.data.subject} ${options.data.description}`;
     }
 
     chartTextWrapper.append('div')
     .classed('nhsd-viz-body', true)
     .classed('nhsd-viz-lead-paragraph', true)
-    .html(chartText);
+    .html(chartHeadline);
 
     chartTextWrapper.append('div')
     .classed('nhsd-viz-body-2', true)
     .classed('nhsd-viz-second-paragraph', true)
-    .text(options.data.description);
+    .text(chartDesc);
   }
 }
