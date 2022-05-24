@@ -4,11 +4,14 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
+    "moduleResolution": "node",
     "types" : ["d3"],
     "lib": [
       "es2015.promise",
       "es5",
       "dom"
-    ]
-  }
+    ],
+    "target": "ES2015"
+  },
+  "include": ["./src/**/*"]
 }

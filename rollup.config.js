@@ -1,8 +1,8 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
-import { babel } from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
+import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
 
 const removeCircularDependencyWarning = function ( message ) {
   if (message.code === 'CIRCULAR_DEPENDENCY') {
@@ -23,17 +23,9 @@ export default [{
     nodeResolve(),
     typescript(),
     commonjs(),
-    babel({ 
-      babelHelpers: 'bundled',
-      presets: [
-        [
-          "@babel/preset-env",
-          {
-            "useBuiltIns": "entry",
-            "corejs": "3.21.1"
-          }
-        ]
-      ]
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      preventAssignment: true,
     }),
     terser(),
   ],
@@ -49,19 +41,11 @@ export default [{
   plugins: [
     nodeResolve(),
     typescript(),
-    commonjs(),
-    babel({ 
-      babelHelpers: 'bundled',
-      presets: [
-        [
-          "@babel/preset-env",
-          {
-            "useBuiltIns": "entry",
-            "corejs": "3.21.1"
-          }
-        ]
-      ]
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      preventAssignment: true,
     }),
+    commonjs(),
   ],
   onwarn: removeCircularDependencyWarning,
 }];
