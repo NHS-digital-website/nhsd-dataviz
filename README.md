@@ -37,7 +37,6 @@ The following code snippet demonstrates loading the data visualisation library a
       <div id="viz"></div>
       <script>
       nhsdviz.chart('#viz', {
-        "fontSize": "18px",
         "data": {
             "date": "2022",
             "percent": 18,
@@ -66,7 +65,7 @@ nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 
 | Property          | Value                                    | Description                              |
 |-------------------|------------------------------------------|------------------------------------------|
-| vizType           | "pie" \| "doughnut" \| "icon"            | Chart type                               |
+| vizType           | "pie" \| "doughnut" \| "icon" \| "stat"  | Chart type (default: pie)                |
 | title             | String                                   | Chart title text                         |
 | introText         | String                                   | Chart introductory text                  |
 | data              | <a href="#dataObject">Data object</a>    | Chart data                               |
@@ -83,6 +82,7 @@ nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 | change       | { percent: number, from: number, date: string } | Chart change text                    |
 | percent      | number                                          | Chart percent value (pie & doughnut) |
 | ratio        | { numerator: number, denominator: number }      | Chart ratio value (icon)             |
+| quantity     | number                                          | Chart quantity value (stat)          |
 
 ### Examples
 
@@ -94,6 +94,9 @@ https://jsfiddle.net/LEJA3/f4o6v2xh/
 
 #### Icon Chart
 https://jsfiddle.net/LEJA3/kroLbf4z/
+
+#### Statistics Chart
+https://jsfiddle.net/LEJA3/rov9weby/
 
 ## Colour palette
 
