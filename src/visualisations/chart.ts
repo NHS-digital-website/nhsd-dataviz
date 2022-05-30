@@ -12,8 +12,7 @@ export default async function (vizWrapper: d3.Selection<d3.BaseType, unknown, HT
 
   const vizChart = vizWrapper.select('.nhsd-viz-chart-content-wrapper')
   .insert('div')
-  .classed('nhsd-viz-chart', true)
-  .attr('aria-hidden', true);
+  .classed('nhsd-viz-chart', true);
 
   try {
     if (isDoughnut(options)) {
