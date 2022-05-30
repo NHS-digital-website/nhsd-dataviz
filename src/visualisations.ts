@@ -8,54 +8,15 @@ import introText from "./content/intro-text";
 import vizChart from "./visualisations/chart";
 import { createPalette } from './helpers/palette';
 import debounce from './helpers/debounce';
-import optionDefaults from './helpers/option-defaults';
+import defaults, { VisualisationOptions } from './options';
 
-export interface VisualisationOptions {
-    vizType?: "pie" | "doughnut" | "icon" | "stat",
-    title?: string,
-    introText?: string,
-    data: {
-        description?: string,
-        quantity?: number,
-        subject?: string,
-        change?: {
-            percent?: number,
-            from?: number,
-            date: string
-        },
-        percent?: number,
-        ratio?: {
-            numerator: number,
-            denominator: number,
-        },
-    } & ({
-        percent: number
-    } | {
-        ratio: {
-            numerator: number,
-            denominator: number,
-        }
-    } | {
-        quantity: number
-    }),
-    source?: {
-        text: string,
-        href?: string,
-    },
-    desktopViewport?: number,
-};
-
-export interface VisualisationFullOptions extends VisualisationOptions {
-    vizType: "pie" | "doughnut" | "icon" | "stat",
-    visualisationId: string,
-    fontSize?: string,
-    desktopViewport: number
-}
-  
 async function render(selector: string, options: VisualisationOptions) {
-    const fullOptions = optionDefaults(options);
-
     const target = d3.select(selector).html("");
+    if (!(target.node() instanceof HTMLElement)) {
+        throw new Error("HTML element not found");
+    }
+
+    const fullOptions = defaults(options);
 
     chartStyles(target, fullOptions);
 
@@ -91,7 +52,7 @@ export async function chart(selector: string, options: VisualisationOptions) {
         throw new Error("Visualisation options not set");
     }
 
-    const debouncedRender = debounce(() => render(selector, options), 250)
+    const debouncedRender = debounce(() => render(selector, options), 250);
     window.addEventListener('resize', debouncedRender);
     await render(selector, options);
 }
