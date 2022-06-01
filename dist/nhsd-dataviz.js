@@ -7873,10 +7873,7 @@ var nhsdviz = (function (exports) {
             let chartHeadline = '';
             let chartDesc = options.data.description;
             if (options.data.percent) {
-                if (options.vizType == 'doughnut') {
-                    chartHeadline = `<span class="nhsd-viz-sr-only">${options.data.percent}%</span>`;
-                }
-                else {
+                if (options.vizType !== 'doughnut') {
                     chartHeadline = `${options.data.percent}%`;
                 }
                 chartHeadline += ` of ${options.data.subject}`;
@@ -7902,13 +7899,18 @@ var nhsdviz = (function (exports) {
     function changeText (vizWrapper, options) {
         if (options.data.change) {
             let changeText = '';
-            if (options.data.change.percent >= 0) {
-                changeText += `<span class="nhsd-viz-sr-only">Up</span><svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false" viewBox="0 0 16 16" width="16px" height="16px" x="0" y="0" aria-hidden="true"><path d="M1,7.5L8,1l7,6.5L13.5,9L9,4.8L9,15H7L7,4.8L2.5,9L1,7.5z"></path></svg> `;
+            if (options.data.change.percent > 0) {
+                changeText += `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false" viewBox="0 0 16 16" width="16px" height="16px" x="0" y="0" aria-label="Up"><path d="M1,7.5L8,1l7,6.5L13.5,9L9,4.8L9,15H7L7,4.8L2.5,9L1,7.5z"></path></svg> `;
+            }
+            else if (options.data.change.percent < 0) {
+                changeText += `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false" viewBox="0 0 16 16" width="16px" height="16px" x="0" y="0" aria-label="Down"><path d="M15,8.5L8,15L1,8.5L2.5,7L7,11.2L7,1l2,0l0,10.2L13.5,7L15,8.5z"></path></svg> `;
+            }
+            if (options.data.change.percent != 0) {
+                changeText += `${Math.abs(options.data.change.percent)}% `;
             }
             else {
-                changeText += `<span class="nhsd-viz-sr-only">Down</span><svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false" viewBox="0 0 16 16" width="16px" height="16px" x="0" y="0" aria-hidden="true"><path d="M15,8.5L8,15L1,8.5L2.5,7L7,11.2L7,1l2,0l0,10.2L13.5,7L15,8.5z"></path></svg> `;
+                changeText += 'No change ';
             }
-            changeText += `${options.data.change.percent}% `;
             if (options.data.change.from !== undefined) {
                 changeText += `from ${options.data.change.from} in `;
             }
@@ -8017,10 +8019,6 @@ var nhsdviz = (function (exports) {
         var arcRadius = radius - selectedOffset - arrowSize - arrowOffset;
         if (!options.data || !options.data.percent)
             return;
-        vizChart.insert('div')
-            .classed('nhsd-viz-doughnut-percentage', true)
-            .classed('nhsd-viz-body', true)
-            .text(`${options.data.percent}%`);
         const svg = vizChart.insert('svg')
             .attr('xmlns', 'http://www.w3.org/2000/svg')
             .attr('preserveAspectRatio', 'xMidYMid meet')
@@ -8057,6 +8055,10 @@ var nhsdviz = (function (exports) {
                 .classed('nhsd-viz-fill-primary', true)
                 .attr('transform', `rotate(${angleDeg}) translate(${0},${-(arcRadius + arrowOffset)})`);
         }
+        vizChart.insert('div')
+            .classed('nhsd-viz-doughnut-percentage', true)
+            .classed('nhsd-viz-body', true)
+            .text(`${options.data.percent}%`);
         return svgGroup;
     }
 
@@ -8145,8 +8147,7 @@ var nhsdviz = (function (exports) {
                 return;
             const vizChart = vizWrapper.select('.nhsd-viz-chart-content-wrapper')
                 .insert('div')
-                .classed('nhsd-viz-chart', true)
-                .attr('aria-hidden', true);
+                .classed('nhsd-viz-chart', true);
             try {
                 if (isDoughnut(options)) {
                     yield doughnut(vizChart, options);

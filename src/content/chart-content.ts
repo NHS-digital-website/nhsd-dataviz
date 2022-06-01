@@ -10,9 +10,7 @@ export default function (vizWrapper: d3.Selection<d3.BaseType, unknown, HTMLElem
     let chartDesc = options.data.description;
 
     if (options.data.percent) {
-      if (options.vizType == 'doughnut') {
-        chartHeadline = `<span class="nhsd-viz-sr-only">${options.data.percent}%</span>`;
-      } else {
+      if (options.vizType !== 'doughnut') {
         chartHeadline = `${options.data.percent}%`;
       }
       chartHeadline += ` of ${options.data.subject}`;

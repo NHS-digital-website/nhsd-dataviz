@@ -18,11 +18,6 @@ export default function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLElement
 
   if (!options.data || !options.data.percent) return;
 
-  vizChart.insert('div')
-  .classed('nhsd-viz-doughnut-percentage', true)
-  .classed('nhsd-viz-body', true)
-  .text(`${options.data.percent}%`);
-
   const svg = vizChart.insert('svg')
   .attr('xmlns', 'http://www.w3.org/2000/svg')
   .attr('preserveAspectRatio','xMidYMid meet')
@@ -66,6 +61,12 @@ export default function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLElement
     .attr("d", line([[0,0],[arrowSize * 0.8,-arrowSize],[-arrowSize * 0.8,-arrowSize]]))
     .classed('nhsd-viz-fill-primary', true)
     .attr('transform', `rotate(${angleDeg}) translate(${0},${-(arcRadius + arrowOffset)})`);
-    }
+  }
+
+  vizChart.insert('div')
+    .classed('nhsd-viz-doughnut-percentage', true)
+    .classed('nhsd-viz-body', true)
+    .text(`${options.data.percent}%`);
+
   return svgGroup;
 }
