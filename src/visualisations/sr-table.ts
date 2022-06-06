@@ -1,11 +1,10 @@
 import { VisualisationFullOptions, SeriesData } from "../options";
 
-export interface BarOptions extends VisualisationFullOptions {
-  vizType: "bar",
+export interface TableOptions extends VisualisationFullOptions {
   data: VisualisationFullOptions['data'] & SeriesData
 }
 
-export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement, any>, options: BarOptions) {
+export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement, any>, options: TableOptions) {
   const table = vizChart.insert('table');
 
   table.append('thead')

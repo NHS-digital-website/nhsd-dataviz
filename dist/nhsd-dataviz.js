@@ -8870,7 +8870,7 @@ var nhsdviz = (function (exports) {
             });
             target.insert('style').html(sheet.toString());
         }
-        if (options.vizType == 'icon' || options.vizType == 'stat' || options.vizType == 'bar') {
+        if (options.vizType == 'icon' || options.vizType == 'stat' || options.vizType == 'column') {
             const sheet = jss.createStyleSheet({
                 '@global': {
                     [`#nhsd-viz-${options.visualisationId}`]: {
@@ -8960,7 +8960,7 @@ var nhsdviz = (function (exports) {
             });
             target.insert('style').html(sheet.toString());
         }
-        if (options.vizType == 'bar') {
+        if (options.vizType == 'column') {
             const sheet = jss.createStyleSheet({
                 '@global': {
                     [`#nhsd-viz-${options.visualisationId}`]: {
@@ -9326,7 +9326,7 @@ var nhsdviz = (function (exports) {
         table.classed('nhsd-viz-sr-only', true);
     }
 
-    function bar (vizChart, options) {
+    function column (vizChart, options) {
         const boundingRect = vizChart.node().getBoundingClientRect();
         const { width } = boundingRect;
         const height = Math.min(width * 0.6, 600);
@@ -9347,7 +9347,7 @@ var nhsdviz = (function (exports) {
                 .attr("transform", "rotate(-90)")
                 .append("text")
                 .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "hanging")
+                .attr("dominant-baseline", "hanging")
                 .attr("y", 0)
                 .classed('nhsd-viz-body', true)
                 .classed('nhsd-viz-column-xaxis-label', true)
@@ -9392,9 +9392,9 @@ var nhsdviz = (function (exports) {
                 .classed('nhsd-viz-column-xaxis-label', true)
                 .text(options.data.xAxis.title);
         }
-        const barWithoutLabelHeight = chartHeight - labelHeight - labelPadding - xAxisLabelHeight;
+        const columnWithoutLabelHeight = chartHeight - labelHeight - labelPadding - xAxisLabelHeight;
         if (yAxisLabel) {
-            yAxisLabel.attr("x", -barWithoutLabelHeight / 2);
+            yAxisLabel.attr("x", -columnWithoutLabelHeight / 2);
         }
         let yMin = 0;
         if (options.data.yAxis && options.data.yAxis.start != undefined) {
@@ -9404,8 +9404,8 @@ var nhsdviz = (function (exports) {
         if (options.data.yAxis && options.data.yAxis.end != undefined) {
             yMax = options.data.yAxis.end;
         }
-        labelsGroup.attr("transform", `translate(0, ${(barWithoutLabelHeight + labelPadding)})`);
-        const y = linear([barWithoutLabelHeight, 0])
+        labelsGroup.attr("transform", `translate(0, ${(columnWithoutLabelHeight + labelPadding)})`);
+        const y = linear([columnWithoutLabelHeight, 0])
             .domain([yMin, yMax]);
         const yAxis = axisLeft(y).ticks(4, "~s");
         chartGroup.append("g")
@@ -9429,14 +9429,14 @@ var nhsdviz = (function (exports) {
             bandOffset = (x.bandwidth() - bandWidth) / 2;
         }
         chartGroup.append("g")
-            .selectAll("mybar")
+            .selectAll("nhsd-viz-column-rect")
             .data(options.data.series)
             .enter()
             .append("rect")
             .attr("x", (d) => x(d.name) + bandOffset)
             .attr("y", (d) => y(d.values[0]))
             .attr("width", bandWidth)
-            .attr("height", (d) => barWithoutLabelHeight - y(d.values[0]))
+            .attr("height", (d) => columnWithoutLabelHeight - y(d.values[0]))
             .classed('nhsd-viz-fill-primary', true);
         srTable(vizChart, options);
         return svg;
@@ -9445,10 +9445,10 @@ var nhsdviz = (function (exports) {
     const isDoughnut = (options) => options.vizType == 'doughnut';
     const isIcon = (options) => options.vizType == 'icon';
     const isPie = (options) => options.vizType == 'pie';
-    const isBar = (options) => options.vizType == 'bar';
+    const isColumn = (options) => options.vizType == 'column';
     function vizChart (vizWrapper, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!isDoughnut(options) && !isIcon(options) && !isPie(options) && !isBar(options))
+            if (!isDoughnut(options) && !isIcon(options) && !isPie(options) && !isColumn(options))
                 return;
             const vizChart = vizWrapper.select('.nhsd-viz-chart-content-wrapper')
                 .insert('div')
@@ -9463,8 +9463,8 @@ var nhsdviz = (function (exports) {
                 else if (isPie(options)) {
                     yield pie(vizChart, options);
                 }
-                else if (isBar(options)) {
-                    yield bar(vizChart, options);
+                else if (isColumn(options)) {
+                    yield column(vizChart, options);
                 }
             }
             catch (e) {
