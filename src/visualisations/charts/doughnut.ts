@@ -1,11 +1,9 @@
 import * as d3 from "d3";
-import { VisualisationFullOptions } from "../../visualisations";
+import { VisualisationFullOptions, PercentData } from "../../options";
 
 export interface DoughnutOptions extends VisualisationFullOptions {
   vizType: "doughnut",
-  data: VisualisationFullOptions['data'] & {
-    percent: number,
-  },
+  data: VisualisationFullOptions['data'] & PercentData,
 }
 
 export default function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, options: DoughnutOptions) {

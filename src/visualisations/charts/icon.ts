@@ -1,16 +1,10 @@
 import * as d3 from "d3";
 import isMobile from "../../helpers/is-mobile";
-import { VisualisationFullOptions } from "../../visualisations";
+import { VisualisationFullOptions, RatioData } from "../../options";
 
 export interface IconOptions extends VisualisationFullOptions {
   vizType: "icon",
-  data: VisualisationFullOptions['data'] & {
-    ratio: {
-      numerator: number,
-      denominator: number,
-    }
-  },
-  desktopViewport: number,
+  data: VisualisationFullOptions['data'] & RatioData,
   icon?: string,
 }
 

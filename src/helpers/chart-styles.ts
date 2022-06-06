@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import config from "../config";
 import { getPalette, Palette } from './palette';
-import { VisualisationOptions } from '../visualisations';
-import jss, { Styles } from 'jss';
+import { VisualisationOptions } from '../options';
+import jss from 'jss';
 import preset from 'jss-preset-default';
 
 jss.setup(preset());
@@ -88,6 +88,14 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
         '& .nhsd-viz-chart': {
           maxWidth: '20em',
           width: '50%',
+
+          '& svg': {
+            fontFamily: 'inherit',
+
+            '& g': {
+              fontFamily: 'inherit',
+            }
+          }
         },
 
         '& .nhsd-viz-chart-content': {
@@ -214,7 +222,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
     target.insert('style').html(sheet.toString());
   }
 
-  if (options.vizType == 'icon' || options.vizType == 'stat') {
+  if (options.vizType == 'icon' || options.vizType == 'stat' || options.vizType == 'bar') {
     const sheet = jss.createStyleSheet({
       '@global': {
         [`#nhsd-viz-${options.visualisationId}`]: {
@@ -308,6 +316,38 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
             margin: '0.8em 0',
           }
         }
+      }
+    });
+
+    target.insert('style').html(sheet.toString());
+  }
+
+  if (options.vizType == 'bar') {
+    const sheet = jss.createStyleSheet({
+      '@global': {
+        [`#nhsd-viz-${options.visualisationId}`]: {
+          '& .nhsd-viz-intro-text': {
+            'marginBottom': '1em',
+            'fontSize': '2em'
+          },
+          '& .nhsd-viz-chart': {
+            'max-width': '100%',
+            '& .nhsd-viz-column-xaxis, & .nhsd-viz-column-yaxis': {
+              'font-size': '1em',
+            },
+            '& .nhsd-viz-column-xaxis-label, & .nhsd-viz-column-yaxis-label': {
+              'font-size': '1.2em',
+              'font-weight': 'bold',
+            }
+          }
+        },
+        [`@media (max-width: ${options.desktopViewport}px)`]: {
+          [`#nhsd-viz-${options.visualisationId}`]: {
+            '& .nhsd-viz-intro-text': {
+              'fontSize': '1.6em'
+            }
+          }
+        },
       }
     });
 
