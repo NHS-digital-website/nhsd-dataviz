@@ -22,8 +22,13 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
       [`#nhsd-viz-${options.visualisationId}`]: {
         position: 'relative',
         background: palette.background,
-        fontSize: `${options.fontSize || "16px"}`,
         textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        fontSize: `${options.fontSize || "1em"}`,
 
         ['& .nhsd-viz-sr-only']: {
           position: 'absolute!important',
@@ -39,6 +44,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
 
         ['& .nhsd-viz-content']: {
           padding: config.padding,
+          width: '100%',
         },
 
         ['& .nhsd-viz-fill-primary']: {
@@ -173,7 +179,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
       '@global': {
         [`#nhsd-viz-${options.visualisationId}`]: {
           ['& .nhsd-viz-pie, & .nhsd-viz-doughnut']: {
-            transform: 'scale(1.06)',
+            transform: 'scale(1.08)',
           },
 
           ['& .nhsd-viz-pie .nhsd-viz-pie-arcs path, & .nhsd-viz-doughnut .nhsd-viz-doughnut-arcs path']: {
@@ -201,6 +207,8 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
 
           '& .nhsd-viz-chart': {
             position: 'relative',
+            minWidth: '14.5em',
+
           },
 
           '& .nhsd-viz-chart .nhsd-viz-doughnut-percentage': {
@@ -333,10 +341,10 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
           '& .nhsd-viz-chart': {
             'max-width': '100%',
             '& .nhsd-viz-column-xaxis, & .nhsd-viz-column-yaxis': {
-              'font-size': '1em',
+              'font-size': '1.2em',
             },
             '& .nhsd-viz-column-xaxis-label, & .nhsd-viz-column-yaxis-label': {
-              'font-size': '1.2em',
+              'font-size': '1.4em',
               'font-weight': 'bold',
             }
           }

@@ -4333,7 +4333,6 @@ var nhsdviz = (function (exports) {
     const defaultConf = {
         padding: '2em',
         desktopViewport: 1024,
-        fontSize: '16px',
     };
 
     let colourPalette = {
@@ -8702,8 +8701,13 @@ var nhsdviz = (function (exports) {
                 [`#nhsd-viz-${options.visualisationId}`]: {
                     position: 'relative',
                     background: palette.background,
-                    fontSize: `${options.fontSize || "16px"}`,
                     textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                    height: '100%',
+                    fontSize: `${options.fontSize || "1em"}`,
                     ['& .nhsd-viz-sr-only']: {
                         position: 'absolute!important',
                         width: '1px!important',
@@ -8717,6 +8721,7 @@ var nhsdviz = (function (exports) {
                     },
                     ['& .nhsd-viz-content']: {
                         padding: defaultConf.padding,
+                        width: '100%',
                     },
                     ['& .nhsd-viz-fill-primary']: {
                         fill: palette.primary,
@@ -8829,7 +8834,7 @@ var nhsdviz = (function (exports) {
                 '@global': {
                     [`#nhsd-viz-${options.visualisationId}`]: {
                         ['& .nhsd-viz-pie, & .nhsd-viz-doughnut']: {
-                            transform: 'scale(1.06)',
+                            transform: 'scale(1.08)',
                         },
                         ['& .nhsd-viz-pie .nhsd-viz-pie-arcs path, & .nhsd-viz-doughnut .nhsd-viz-doughnut-arcs path']: {
                             stroke: palette.background,
@@ -8852,6 +8857,7 @@ var nhsdviz = (function (exports) {
                         },
                         '& .nhsd-viz-chart': {
                             position: 'relative',
+                            minWidth: '14.5em',
                         },
                         '& .nhsd-viz-chart .nhsd-viz-doughnut-percentage': {
                             position: 'absolute',
@@ -8971,10 +8977,10 @@ var nhsdviz = (function (exports) {
                         '& .nhsd-viz-chart': {
                             'max-width': '100%',
                             '& .nhsd-viz-column-xaxis, & .nhsd-viz-column-yaxis': {
-                                'font-size': '1em',
+                                'font-size': '1.2em',
                             },
                             '& .nhsd-viz-column-xaxis-label, & .nhsd-viz-column-yaxis-label': {
-                                'font-size': '1.2em',
+                                'font-size': '1.4em',
                                 'font-weight': 'bold',
                             }
                         }
@@ -9286,7 +9292,9 @@ var nhsdviz = (function (exports) {
                 tspan.text(line.join(" "));
                 if (tspan.node().getComputedTextLength() > width) {
                     line.pop();
-                    tspan.text(line.join(" "));
+                    if (line.length > 0) {
+                        tspan.text(line.join(" "));
+                    }
                     line = [word];
                     tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
                 }
@@ -9329,99 +9337,100 @@ var nhsdviz = (function (exports) {
     function column (vizChart, options) {
         const boundingRect = vizChart.node().getBoundingClientRect();
         const { width } = boundingRect;
-        const height = Math.min(width * 0.6, 600);
-        const topMargin = 8;
-        let leftMargin = 46;
+        const chartHeight = Math.min(width * 0.4, 600);
         if (!options.data || !options.data.series)
             return;
+        let yMin = 0;
+        let yMax = options.data.series.reduce((acc, cur) => Math.max(cur.values[0], acc), 0);
+        if (options.data.yAxis) {
+            if (options.data.yAxis.start != undefined) {
+                yMin = options.data.yAxis.start;
+            }
+            if (options.data.yAxis.end != undefined) {
+                yMax = options.data.yAxis.end;
+            }
+        }
         const svg = vizChart.insert('svg')
             .attr('xmlns', 'http://www.w3.org/2000/svg')
             .attr('preserveAspectRatio', 'xMidYMid meet')
-            .attr("viewBox", [0, 0, width, height])
+            .attr("viewBox", [0, 0, width, chartHeight])
             .attr('aria-hidden', true)
             .classed('nhsd-viz-column', true)
             .style('width', '100%');
-        let yAxisLabel;
+        let yAxisLabelWidth = 0;
         if (options.data.yAxis && options.data.yAxis.title) {
-            yAxisLabel = svg.append("g")
+            const yAxisLabel = svg.append("g")
                 .attr("transform", "rotate(-90)")
                 .append("text")
                 .attr("text-anchor", "middle")
                 .attr("dominant-baseline", "hanging")
                 .attr("y", 0)
+                .attr("x", -chartHeight / 2)
                 .classed('nhsd-viz-body', true)
                 .classed('nhsd-viz-column-xaxis-label', true)
                 .text(options.data.yAxis.title);
-            leftMargin += yAxisLabel.node().getBBox().height + 8;
+            yAxisLabelWidth += yAxisLabel.node().getBBox().height;
         }
-        const chartWidth = width - leftMargin;
-        const chartHeight = height - topMargin;
-        const x = band()
-            .range([0, chartWidth])
-            .domain(options.data.series.map(d => d.name))
-            .padding(0.15);
-        const chartGroup = svg.append('g')
-            .attr("transform", `translate(${leftMargin},${topMargin})`);
-        const labelsGroup = chartGroup.append("g")
-            .call(axisBottom(x).tickSize(0))
-            .call(g => {
-            g.attr('font-family', null);
-            g.attr('font-size', null);
-        })
-            .classed('nhsd-viz-column-xaxis', true);
-        labelsGroup.selectAll('.domain').remove();
-        labelsGroup.selectAll("text")
-            .classed('nhsd-viz-body', true)
-            .call(wrap, x.bandwidth());
-        let labelHeight = 0;
-        const labelPadding = 5;
-        labelsGroup.selectAll("text")
-            .each(function () {
-            let thisLabelHeight = Math.ceil(this.getBBox().height);
-            labelHeight = Math.max(labelHeight, thisLabelHeight);
-        });
-        let xAxisLabelHeight = 0;
-        if (options.data.xAxis && options.data.xAxis.title) {
-            xAxisLabelHeight = 28;
-            chartGroup.append("g")
-                .append("text")
-                .attr("text-anchor", "middle")
-                .attr("y", chartHeight - 4)
-                .attr("x", chartWidth / 2)
-                .classed('nhsd-viz-body', true)
-                .classed('nhsd-viz-column-xaxis-label', true)
-                .text(options.data.xAxis.title);
-        }
-        const columnWithoutLabelHeight = chartHeight - labelHeight - labelPadding - xAxisLabelHeight;
-        if (yAxisLabel) {
-            yAxisLabel.attr("x", -columnWithoutLabelHeight / 2);
-        }
-        let yMin = 0;
-        if (options.data.yAxis && options.data.yAxis.start != undefined) {
-            yMin = options.data.yAxis.start;
-        }
-        let yMax = options.data.series.reduce((acc, cur) => Math.max(cur.values[0], acc), 0);
-        if (options.data.yAxis && options.data.yAxis.end != undefined) {
-            yMax = options.data.yAxis.end;
-        }
-        labelsGroup.attr("transform", `translate(0, ${(columnWithoutLabelHeight + labelPadding)})`);
-        const y = linear([columnWithoutLabelHeight, 0])
+        const chartGroup = svg.append('g');
+        const y = linear([chartHeight, 0])
             .domain([yMin, yMax]);
-        const yAxis = axisLeft(y).ticks(4, "~s");
+        let yAxisWidth = 0;
+        const yAxisGenerator = axisLeft(y).ticks(4, "~s");
         chartGroup.append("g")
             .attr("transform", `translate(0,-1)`)
-            .call(yAxis)
+            .call(yAxisGenerator)
             .call(g => {
             g.attr('font-family', null);
             g.attr('font-size', null);
         })
             .call(g => g.selectAll(".tick line")
-            .attr("x2", chartWidth)
+            .attr("x2", width - yAxisLabelWidth)
             .attr("stroke-opacity", 0.3)
             .classed('nhsd-viz-body', true))
             .call(g => g.selectAll(".tick text").classed('nhsd-viz-body', true))
+            .call(g => g.selectAll(".tick text").each(function () {
+            yAxisWidth = Math.max(yAxisWidth, this.getBBox().width);
+        }))
             .call(g => g.selectAll(".domain").remove())
             .classed('nhsd-viz-column-yaxis', true);
+        chartGroup.attr("transform", `translate(${(yAxisLabelWidth * 2) + yAxisWidth},${0})`);
+        const chartWidth = width - (yAxisLabelWidth * 2) - yAxisWidth;
+        const x = band()
+            .range([0, chartWidth])
+            .domain(options.data.series.map(d => d.name))
+            .padding(0.15);
+        const labelsGroup = chartGroup.append("g")
+            .attr("transform", `translate(${yAxisWidth},${0})`)
+            .call(axisBottom(x).tickSize(0))
+            .call(g => {
+            g.attr('font-family', null)
+                .attr('font-size', null);
+        })
+            .classed('nhsd-viz-column-xaxis', true);
+        labelsGroup.selectAll('.domain').remove();
+        labelsGroup.selectAll("text")
+            .classed('nhsd-viz-body', true)
+            .attr('dy', '1em')
+            .call(wrap, x.bandwidth());
+        let xAxisLabelHeight = 0;
+        labelsGroup.selectAll("text").each(function () {
+            let thisLabelHeight = this.getBBox().height;
+            xAxisLabelHeight = Math.max(xAxisLabelHeight, thisLabelHeight);
+        });
+        if (options.data.xAxis && options.data.xAxis.title) {
+            const xAxisGroup = chartGroup.append("g")
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr("y", chartHeight + xAxisLabelHeight)
+                .attr("x", chartWidth / 2)
+                .classed('nhsd-viz-body', true)
+                .classed('nhsd-viz-column-xaxis-label', true)
+                .append('tspan')
+                .attr('dy', '1.81em')
+                .text(options.data.xAxis.title);
+            xAxisGroup.node().getBBox().height;
+        }
+        labelsGroup.attr("transform", `translate(0, ${chartHeight})`);
         const maxBandWidth = 160;
         const bandWidth = Math.min(maxBandWidth, x.bandwidth());
         let bandOffset = 0;
@@ -9436,8 +9445,10 @@ var nhsdviz = (function (exports) {
             .attr("x", (d) => x(d.name) + bandOffset)
             .attr("y", (d) => y(d.values[0]))
             .attr("width", bandWidth)
-            .attr("height", (d) => columnWithoutLabelHeight - y(d.values[0]))
+            .attr("height", (d) => chartHeight - y(d.values[0]))
             .classed('nhsd-viz-fill-primary', true);
+        const svgHeight = chartGroup.node().getBoundingClientRect().height;
+        svg.attr("viewBox", [0, 0, width, svgHeight]);
         srTable(vizChart, options);
         return svg;
     }
@@ -9495,14 +9506,9 @@ var nhsdviz = (function (exports) {
         const visualisationId = generateId();
         const vizType = options.vizType || 'pie';
         const desktopViewport = options.desktopViewport || defaultConf.desktopViewport;
-        let fontSize = defaultConf.fontSize;
-        if (options.fontSize) {
-            fontSize = options.fontSize;
-        }
         const fullOptions = Object.assign(Object.assign({}, options), { visualisationId,
             vizType,
-            desktopViewport,
-            fontSize });
+            desktopViewport });
         return fullOptions;
     }
 

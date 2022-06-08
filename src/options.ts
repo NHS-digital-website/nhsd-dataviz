@@ -27,7 +27,6 @@ export interface VisualisationOptions {
 export interface VisualisationFullOptions extends VisualisationOptions {
   vizType: "pie" | "doughnut" | "icon" | "stat" | "column",
   visualisationId: string,
-  fontSize: string,
   desktopViewport: number,
 }
 
@@ -70,17 +69,11 @@ export default function(options: VisualisationOptions): VisualisationFullOptions
   const vizType = options.vizType || 'pie';
   const desktopViewport = options.desktopViewport || config.desktopViewport;
 
-  let fontSize = config.fontSize;
-  if (options.fontSize) {
-    fontSize = options.fontSize;
-  }
-
   const fullOptions: VisualisationFullOptions = { 
     ...options,
     visualisationId,
     vizType,
     desktopViewport,
-    fontSize,
   };
 
   return fullOptions;

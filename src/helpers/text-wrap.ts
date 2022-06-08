@@ -16,7 +16,9 @@ export default function wrap(text: d3.Selection<SVGSVGElement, unknown, SVGSVGEl
       tspan.text(line.join(" "));
       if (tspan.node().getComputedTextLength() > width) {
         line.pop();
-        tspan.text(line.join(" "));
+        if (line.length > 0) {
+          tspan.text(line.join(" "));
+        }
         line = [word];
         tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
       }
