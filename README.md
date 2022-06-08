@@ -101,6 +101,9 @@ https://jsfiddle.net/LEJA3/kroLbf4z/
 #### Statistics Chart
 https://jsfiddle.net/LEJA3/rov9weby/
 
+#### Column Chart
+https://jsfiddle.net/LEJA3/fqtphz7o/
+
 ## Colour palette
 
 nhsdviz.createPalette(<i>name</i>, <i><a href="#paletteObject">palette</a></i>)
