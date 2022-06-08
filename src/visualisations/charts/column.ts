@@ -2,12 +2,12 @@ import * as d3 from "d3";
 import textWrap from "../../helpers/text-wrap";
 import srTable from "../sr-table";
 import { VisualisationFullOptions, SeriesData } from "../../options";
-export interface BarOptions extends VisualisationFullOptions {
-  vizType: "bar",
+export interface ColumnOptions extends VisualisationFullOptions {
+  vizType: "column",
   data: VisualisationFullOptions['data'] & SeriesData
 }
 
-export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement, any>, options: BarOptions) {
+export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement, any>, options: ColumnOptions) {
   const boundingRect = vizChart.node().getBoundingClientRect();
 
   const { width } = boundingRect;
@@ -31,7 +31,7 @@ export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement
       .attr("transform", "rotate(-90)")
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "hanging")
+      .attr("dominant-baseline", "hanging")
       .attr("y", 0)
       .classed('nhsd-viz-body', true)
       .classed('nhsd-viz-column-xaxis-label', true)
@@ -86,10 +86,10 @@ export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement
       .text(options.data.xAxis.title)
   }
 
-  const barWithoutLabelHeight = chartHeight - labelHeight - labelPadding - xAxisLabelHeight;
+  const columnWithoutLabelHeight = chartHeight - labelHeight - labelPadding - xAxisLabelHeight;
 
   if (yAxisLabel) {
-    yAxisLabel.attr("x", -barWithoutLabelHeight / 2)
+    yAxisLabel.attr("x", -columnWithoutLabelHeight / 2)
   }
 
   let yMin = 0;
@@ -102,8 +102,8 @@ export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement
     yMax = options.data.yAxis.end;
   }
   
-  labelsGroup.attr("transform", `translate(0, ${(barWithoutLabelHeight + labelPadding)})`);  
-  const y = d3.scaleLinear([ barWithoutLabelHeight, 0])
+  labelsGroup.attr("transform", `translate(0, ${(columnWithoutLabelHeight + labelPadding)})`);  
+  const y = d3.scaleLinear([ columnWithoutLabelHeight, 0])
     .domain([yMin, yMax]);
 
   const yAxis = d3.axisLeft(y).ticks(4, "~s");
@@ -133,14 +133,14 @@ export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement
   }
 
   chartGroup.append("g")
-  .selectAll("mybar")
+  .selectAll("nhsd-viz-column-rect")
     .data(options.data.series)
     .enter()
     .append("rect")
     .attr("x", (d: SeriesData['series'][0]) => x(d.name) + bandOffset)
     .attr("y", (d: SeriesData['series'][0]) => y(d.values[0]))
     .attr("width", bandWidth)
-    .attr("height", (d: SeriesData['series'][0]) => barWithoutLabelHeight - y(d.values[0]))
+    .attr("height", (d: SeriesData['series'][0]) => columnWithoutLabelHeight - y(d.values[0]))
     .classed('nhsd-viz-fill-primary', true);
 
   // Screen reader table

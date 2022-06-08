@@ -1,7 +1,7 @@
 import config from './config';
 
 export interface VisualisationOptions {
-  vizType?: "pie" | "doughnut" | "icon" | "stat" | "bar",
+  vizType?: "pie" | "doughnut" | "icon" | "stat" | "column",
   title?: string,
   introText?: string,
   data: (
@@ -25,7 +25,7 @@ export interface VisualisationOptions {
 };
 
 export interface VisualisationFullOptions extends VisualisationOptions {
-  vizType: "pie" | "doughnut" | "icon" | "stat" | "bar",
+  vizType: "pie" | "doughnut" | "icon" | "stat" | "column",
   visualisationId: string,
   fontSize: string,
   desktopViewport: number,

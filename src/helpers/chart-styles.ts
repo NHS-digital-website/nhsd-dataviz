@@ -222,7 +222,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
     target.insert('style').html(sheet.toString());
   }
 
-  if (options.vizType == 'icon' || options.vizType == 'stat' || options.vizType == 'bar') {
+  if (options.vizType == 'icon' || options.vizType == 'stat' || options.vizType == 'column') {
     const sheet = jss.createStyleSheet({
       '@global': {
         [`#nhsd-viz-${options.visualisationId}`]: {
@@ -322,7 +322,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
     target.insert('style').html(sheet.toString());
   }
 
-  if (options.vizType == 'bar') {
+  if (options.vizType == 'column') {
     const sheet = jss.createStyleSheet({
       '@global': {
         [`#nhsd-viz-${options.visualisationId}`]: {
