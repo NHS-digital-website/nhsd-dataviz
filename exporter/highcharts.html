@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <title>Highcharts Exporter Template</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        #viz {
+            max-width: 800px;
+        }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.1.0/highcharts.min.js"></script>
+        <script>
+          Highcharts.setOptions({
+            accessibility: {
+                keyboardNavigation: {
+                    enabled : true
+                }
+            },
+            colors: ['#005EB8', '#84919C', '#003087', '#71CCEF', '#D0D5D6'],
+            chart: {
+                backgroundColor: '#F4F5F6',
+                style: {
+                    fontFamily: 'Frutiger W01'
+                },
+                zoomType: 'xy'
+            },
+            xAxis: {
+                title: {
+                    style: {"color": "#000000", "fontWeight": "bold","fontSize":"16px"},
+                },
+                gridLineDashStyle: 'shortdash',
+                gridLineWidth: 1
+            },
+            yAxis: {
+                title: {
+                    style: {"color": "#000000", "fontWeight": "bold"},
+                },
+                gridLineDashStyle: 'shortdash',
+                gridLineWidth: 1
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                scatter: {
+                    marker: {
+                        radius: 5,
+                    }
+                },
+                line: {
+                    marker: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+        </script>
+    </head>
+    <body>
+        <div id="viz"></div>
+    </body>
+</html>

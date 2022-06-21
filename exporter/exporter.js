@@ -1,10 +1,10 @@
 const path = require('path');
-const { v4: uuid } = require('uuid');
+const merge = require('lodash.merge');
 const playwright = require('playwright-aws-lambda');
 
-module.exports = async function exportViz(data = {}) {
+module.exports = async function exportViz(data = {}, library = 'nhsd-dataviz') {
   const browser = await playwright.launchChromium({
-    headless: false,
+    headless: true,
   });
 
   if (!data) throw new Error("Visualisation options not set");
@@ -17,17 +17,35 @@ module.exports = async function exportViz(data = {}) {
     width: 1060,
     height: 768,
   });
-  await page.goto(`file://${path.join(__dirname, 'template.html')}`);
 
-  const error = await page.evaluate(async ([chartData]) => {
+  if (library == 'highcharts') {
+    data = merge(data, {
+      plotOptions: {
+        series: {
+          animation: false,
+        }
+      }
+    });
+
+    await page.goto(`file://${path.join(__dirname, 'highcharts.html')}`);
+  } else {
+    await page.goto(`file://${path.join(__dirname, 'template.html')}`);
+  }
+
+  const error = await page.evaluate(async ([chartData, chartLibrary]) => {
     try {
-      await nhsdviz.chart('#viz', chartData);
+      if (chartLibrary == 'highcharts') {
+        await Highcharts.chart('viz', chartData);
+      } else {
+        await nhsdviz.chart('#viz', chartData);
+      }
     } catch(e) {
       return e.message;
     }
-  }, [data]);
+  }, [data, library]);
 
   if (error) {
+    await browser.close();
     throw new Error(error);
   }
 
@@ -39,7 +57,6 @@ module.exports = async function exportViz(data = {}) {
       element = await page.$('#viz');
       buffer = await element.screenshot();
       fileInfo = {
-        file: uuid() + '.png',
         contentType: 'image/png',
         buffer,
       };
@@ -48,7 +65,6 @@ module.exports = async function exportViz(data = {}) {
       element = await page.$('#viz');
       buffer = await element.screenshot();
       fileInfo = {
-        file: uuid() + '.jpg',
         contentType: 'image/jpeg',
         buffer,
       };
@@ -58,7 +74,6 @@ module.exports = async function exportViz(data = {}) {
       const outerHtmlProp = await element.getProperty('innerHTML');
       buffer = await outerHtmlProp.jsonValue();
       fileInfo = {
-        file: uuid() + '.html',
         contentType: 'text/html',
         buffer,
       };

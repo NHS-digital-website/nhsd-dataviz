@@ -16,8 +16,15 @@ app.use('/lib', express.static(path.join(__dirname, '../dist')));
 app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
 
 app.post('/', async function (req, res) {
+  let options = req.body;
+  if (!options) {
+    res.status(500)
+    res.send('Missing chart options');
+    return;
+  }
+
   try {
-    const viz = await exporter(req.body);
+    const viz = await exporter(options, options.library);
     res.writeHead(200, { 'Content-Type' : viz.contentType });
     res.end(viz.buffer);
   } catch(e) {

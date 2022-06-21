@@ -5,15 +5,29 @@ provider:
   name: aws
   runtime: nodejs14.x
   timeout: 10
-  region: us-east-1
+  region: eu-west-2
+  endpointType: REGIONAL
+  iam:
+    role:
+      managedPolicies:
+        - "arn:aws:iam::186991146235:policy/AccessDataVizParameter"
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
 
 functions:
   index:
     handler: lambda.handler
     events:
-      - httpApi:
-          path: /
-          method: post
+      - http:
+          path: /{library}/{options}/{hash}
+          method: get
+          request:
+            parameters:
+              paths:
+                library: true
+                options: true
+                hash: true
 
 package:
   patterns:

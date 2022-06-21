@@ -9043,7 +9043,7 @@ var nhsdviz = (function (exports) {
     }
 
     function changeText (vizWrapper, options) {
-        if (options.data.change) {
+        if (options.data && options.data.change) {
             let changeText = '';
             if (options.data.change.percent > 0) {
                 changeText += `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false" viewBox="0 0 16 16" width="16px" height="16px" x="0" y="0" aria-label="Up"><path d="M1,7.5L8,1l7,6.5L13.5,9L9,4.8L9,15H7L7,4.8L2.5,9L1,7.5z"></path></svg> `;

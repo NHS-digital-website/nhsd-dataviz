@@ -46,9 +46,9 @@
                     <h1 class="nhsd-t-heading-l">Visualisation Exporter</h1>
 
                     <form class="nhsd-t-form" novalidate="" autocomplete="off">
-                        <div class="nhsd-t-form-group">
-                            <label class="nhsd-t-form-label-s" for="visualisation-options">Visualisation Options</label>
-                            <textarea class="nhsd-t-form-textarea-s" id="visualisation-options" autocomplete="off">
+                        <div class="nhsd-t-form-group" id="nhsd-dataviz-group">
+                            <label class="nhsd-t-form-label-s" for="nhsd-dataviz-options">Visualisation Options</label>
+                            <textarea class="nhsd-t-form-textarea-s" id="nhsd-dataviz-options" autocomplete="off">
 {
     "vizType": "pie",
     "introText": "In 2022",
@@ -64,6 +64,90 @@
     "palette": "default"
 }</textarea>
                         </div>
+
+                        <div class="nhsd-t-form-group" id="highcharts-group">
+                            <label class="nhsd-t-form-label-s" for="highcharts-options">Visualisation Options</label>
+                            <textarea class="nhsd-t-form-textarea-s" id="highcharts-options" autocomplete="off">
+{
+    "title": {
+        "text": "Solar Employment Growth by Sector, 2010-2016"
+    },
+    "subtitle": {
+        "text": "Source: thesolarfoundation.com"
+    },
+    "yAxis": {
+        "title": {
+            "text": "Number of Employees"
+        }
+    },
+    "xAxis": {
+        "accessibility": {
+            "rangeDescription": "Range: 2010 to 2017"
+        }
+    },
+    "legend": {
+        "layout": "vertical",
+        "align": "right",
+        "verticalAlign": "middle"
+    },
+    "plotOptions": {
+        "series": {
+            "label": {
+                "connectorAllowed": false
+            },
+            "pointStart": 2010
+        }
+    },
+    "series": [{
+        "name": "Installation",
+        "data": [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+    }, {
+        "name": "Manufacturing",
+        "data": [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+    }, {
+        "name": "Sales & Distribution",
+        "data": [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+    }, {
+        "name": "Project Development",
+        "data": [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+    }, {
+        "name": "Other",
+        "data": [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+    }],
+    "responsive": {
+        "rules": [{
+            "condition": {
+                "maxWidth": 500
+            },
+            "chartOptions": {
+                "legend": {
+                    "layout": "horizontal",
+                    "align": "center",
+                    "verticalAlign": "bottom"
+                }
+            }
+        }]
+    }
+}</textarea>
+                        </div>
+
+                        <div class="nhsd-t-form-group">
+                            <label class="nhsd-t-form-label-s" for="library">Library</label>
+                            <div class="nhsd-t-form-control">
+                                <select class="nhsd-t-form-select" id="library">
+                                    <option value="nhsd-dataviz">NHSD Dataviz</option>
+                                    <option value="highcharts">Highcharts</option>
+                                </select>
+                                <span class="nhsd-t-form-control__icon">
+                                <span class="nhsd-a-icon nhsd-a-icon--size-s">
+                                    <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="100%" height="100%">
+                                    <path d="M8,12L1,5.5L2.5,4L8,9.2L13.5,4L15,5.5L8,12z"></path>
+                                    </svg>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="nhsd-t-form-group">
                             <label class="nhsd-t-form-label-s" for="format">Image Format</label>
                             <div class="nhsd-t-form-control">
@@ -95,7 +179,14 @@
             </div>
         </div>
         <script>
-            var myCodeMirror = CodeMirror.fromTextArea(document.querySelector('#visualisation-options'), {
+            var nhsdDatavizOptions = CodeMirror.fromTextArea(document.querySelector('#nhsd-dataviz-options'), {
+                lineNumbers: true,
+                mode: {
+                    name: "javascript",
+                    json: true,
+                },
+            });
+            var highchartsOptions = CodeMirror.fromTextArea(document.querySelector('#highcharts-options'), {
                 lineNumbers: true,
                 mode: {
                     name: "javascript",
@@ -103,13 +194,39 @@
                 },
             });
 
+            var highchartsGroup = document.querySelector('#highcharts-group');
+            var nhsdDatavizGroup = document.querySelector('#nhsd-dataviz-group');
+
+            function updateOptions() {
+                if (document.querySelector('#library').value == 'highcharts') {
+                    highchartsGroup.classList.remove('nhsd-!t-display-hide');
+                    nhsdDatavizGroup.classList.add('nhsd-!t-display-hide');
+                } else {
+                    nhsdDatavizGroup.classList.remove('nhsd-!t-display-hide');
+                    highchartsGroup.classList.add('nhsd-!t-display-hide');
+                }
+            }
+
+            document.querySelector('#library').addEventListener('change', updateOptions);
+            updateOptions();
+
             function loadVisualisation(download) {
                 var format = document.querySelector('#format').value;
+                var library = document.querySelector('#library').value;
+                
+                var options = '';
+                if (library == 'highcharts') {
+                    options = highchartsOptions.getValue();
+                } else {
+                    options = nhsdDatavizOptions.getValue();
+                }
+
                 fetch('/', {
                     method: 'POST',
                     body: JSON.stringify({
                         format,
-                        ...JSON.parse(myCodeMirror.getValue()),
+                        library,
+                        ...JSON.parse(options),
                     }),
                     headers: {
                         'Content-Type': 'application/json'
