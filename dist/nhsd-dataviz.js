@@ -8700,6 +8700,7 @@ var nhsdviz = (function (exports) {
             '@global': {
                 [`#nhsd-viz-${options.visualisationId}`]: {
                     position: 'relative',
+                    color: palette.text,
                     background: palette.background,
                     textAlign: 'center',
                     display: 'flex',
@@ -9331,7 +9332,8 @@ var nhsdviz = (function (exports) {
             .call(d => {
             d.append('td').text((d) => d.values[0]);
         });
-        table.classed('nhsd-viz-sr-only', true);
+        table.classed('nhsd-viz-sr-only', true)
+            .classed('nhsd-viz-body', true);
     }
 
     function column (vizChart, options) {

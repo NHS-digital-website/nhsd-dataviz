@@ -21,6 +21,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
     '@global': {
       [`#nhsd-viz-${options.visualisationId}`]: {
         position: 'relative',
+        color: palette.text,
         background: palette.background,
         textAlign: 'center',
         display: 'flex',
