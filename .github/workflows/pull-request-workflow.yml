@@ -61,7 +61,7 @@ jobs:
       # Step 4
       #
       - name: Initialise NPM
-        run: npm i
+        run: npm ci
 
       #
       # Step 5
