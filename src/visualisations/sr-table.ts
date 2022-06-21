@@ -36,5 +36,6 @@ export default function(vizChart: d3.Selection<HTMLElement, unknown, HTMLElement
       d.append('td').text((d: SeriesData['series'][0]) => d.values[0])
     });
 
-  table.classed('nhsd-viz-sr-only', true);
+  table.classed('nhsd-viz-sr-only', true)
+    .classed('nhsd-viz-body', true);
 }
