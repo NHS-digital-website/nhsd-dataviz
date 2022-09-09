@@ -27,7 +27,7 @@ jobs:
       - run: git config --global user.name "GitHub CD bot"
       - run: git config --global user.email "lee.jacobson1@nhs.net"
 
-      - run: npm version ${{ github.event.release.tag_name }}
+      - run: npm --no-git-tag-version version ${{ github.event.release.tag_name }}
 
       # build the project
       - run: npm run build
