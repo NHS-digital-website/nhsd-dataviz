@@ -9,7 +9,7 @@ type ChangeTextOptions = {
 }
 
 export default function (vizWrapper: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, options: ChangeTextOptions) {
-  if (options.data.change) {
+  if (options.data && options.data.change) {
     let changeText = '';
 
     if (options.data.change.percent > 0) {

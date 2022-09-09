@@ -1,255 +1,50 @@
 name: Distribution Workflow
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
-  #
-  # Creates build version for release
-  #
-  create_version:
-    name: "Create new build version"
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      #
-      # Step 1
-      # Create build version
-      #
-      - name: Version bump
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: minor
-
-      #
-      # Step 2
-      # Store version as an artifact
-      #
-      - name: Write verion to file
-        run: echo ${{ steps.tag_version.outputs.new_tag }} > version
-      - name: Archive version artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: version
-          path: version
-
-  #
-  # Build CDN Distribution from source
-  #
-  build_dist:
-    name: "Build CDN Distribution"
-    needs:
-      - create_version
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      #
-      # Step 1
       # Checkout the project's sourcecode
-      #
       - name: Checkout
         uses: actions/checkout@v2
 
-      #
-      # Step 2
       # Set Node.js version
-      #
       - name: Request Node Version
         uses: actions/setup-node@v2
         with:
           node-version: '14.17.6'
+          registry-url: https://registry.npmjs.org/
 
-      #
-      # Step 3
-      # Cache Management (CDN Distribution)
-      #
-      - name: Get cache key helper values
-        uses: actions/github-script@v3
-        id: cache-key-helper
-        with:
-          result-encoding: string
-          script: |
-            return JSON.stringify({
-              "year" : new Date().getFullYear(),
-              "rotation" : new Date().getTimezoneOffset()
-            })
-      - name: Setup cache (Node.js packages)
-        uses: actions/cache@v2
+      - run: npm ci
+
+      # set up git since we will later push to the repo
+      - run: git config --global user.name "GitHub CD bot"
+      - run: git config --global user.email "lee.jacobson1@nhs.net"
+
+      - run: npm version ${{ github.event.release.tag_name }}
+
+      # build the project
+      - run: npm run build
+
+      - run: npm publish
         env:
-          YEAR: ${{ fromJSON(steps.cache-key-helper.outputs.result).year }}
-          ROTATION: ${{ fromJSON(steps.cache-key-helper.outputs.result).rotation }}
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-nhsd-viz-distribution-${{ env.YEAR }}-${{ env.ROTATION }}
-          restore-keys: |
-            ${{ runner.os }}-nhsd-viz-distribution-${{ env.YEAR }}-
-            ${{ runner.os }}-nhsd-viz-distribution-
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      #
-      # Step 4
-      #
-      - name: Initialise NPM
-        run: npm i
+      # push the version changes to GitHub
+      - run: git push
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      #
-      # Step 5
-      #
-      - name: Build dist folder
-        run: npm run build
-
-      #
-      # Step 6
       # Store CDN distribution workflow artifacts
-      #
       - name: Archive dist artifacts
         uses: actions/upload-artifact@v2
         with:
           name: cdn-dist
           path: |
             dist/
-
-  #
-  # Create Versioned Release
-  #
-  tag_and_release:
-    name: "Create GitHub Release"
-    needs:
-      - build_dist
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      #
-      # Step 1
-      #
-      - name: Download all workflow artifacts
-        uses: actions/download-artifact@v2
-        id: download
-        with:
-          path: workflow-artifacts
-
-      #
-      # Step 2
-      #
-      - name: Read version
-        id: version
-        run: |
-          echo "::set-output name=version::$(cat ${{steps.download.outputs.download-path}}/version/version)"
-
-      #
-      # Step 3
-      # Zip up each build artifacts with it's version number injected.
-      #
-      - name: Zip CDN distribution
-        run: |
-          echo ${{ steps.version.outputs.version }} > version
-          zip -r ../cdn-dist.zip .
-        working-directory: ${{steps.download.outputs.download-path}}/cdn-dist
-
-      #
-      # Step 4
-      # Create Release
-      # - Adds versioned release and tag
-      #
-      - uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: Release ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
-
-      - name: Upload CDN Dist Zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path:  ${{ steps.download.outputs.download-path }}/cdn-dist.zip
-          asset_name: cdn-dist-${{ steps.version.outputs.version }}.zip
-          asset_content_type: application/zip
-
-  #
-  # Deploy Lambda Service
-  #
-  deploy_lambda:
-    name: "Deploy Lambda Service"
-    needs:
-      - build_dist
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      #
-      # Step 1
-      # Checkout the project's sourcecode
-      #
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      #
-      # Step 2
-      # Set Node.js version
-      #
-      - name: Request Node Version
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.17.6'
-
-      #
-      # Step 3
-      # Cache Management (CDN Distribution)
-      #
-      - name: Get cache key helper values
-        uses: actions/github-script@v3
-        id: cache-key-helper
-        with:
-          result-encoding: string
-          script: |
-            return JSON.stringify({
-              "year" : new Date().getFullYear(),
-              "rotation" : new Date().getTimezoneOffset()
-            })
-      - name: Setup cache (Node.js packages)
-        uses: actions/cache@v2
-        env:
-          YEAR: ${{ fromJSON(steps.cache-key-helper.outputs.result).year }}
-          ROTATION: ${{ fromJSON(steps.cache-key-helper.outputs.result).rotation }}
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-nhsd-viz-distribution-${{ env.YEAR }}-${{ env.ROTATION }}
-          restore-keys: |
-            ${{ runner.os }}-nhsd-viz-distribution-${{ env.YEAR }}-
-            ${{ runner.os }}-nhsd-viz-distribution-
-
-      #
-      # Step 4
-      #
-      - name: Initialise NPM
-        run: npm i
-
-      #
-      # Step 5
-      #
-      - name: Build dist folder
-        run: npm run build
-
-      #
-      # Step 6
-      #
-      - name: Serverless AWS authentication
-        run: npx serverless config credentials --provider aws --key ${{ secrets.NHSD_VIZ_AWS_KEY_ID }} --secret ${{ secrets.NHSD_VIZ_AWS_SECRET }}
-
-      #
-      # Step 7
-      #
-      - name: Serverless deploy
-        run: npx serverless deploy --stage production
