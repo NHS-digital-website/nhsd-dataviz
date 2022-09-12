@@ -12,10 +12,10 @@ const removeCircularDependencyWarning = function ( message ) {
 };
 
 export default [{
-  input: 'src/visualisations.ts',
+  input: 'src/dataviz.ts',
   output: [{
     file: 'dist/nhsd-dataviz.min.js',
-    format: 'iife',
+    format: 'umd',
     name: 'nhsdviz',
     exports: 'named',
   }],
@@ -31,13 +31,22 @@ export default [{
   ],
   onwarn: removeCircularDependencyWarning,
 },{
-  input: 'src/visualisations.ts',
+  input: 'src/dataviz.ts',
   output: [{
     file: 'dist/nhsd-dataviz.js',
-    format: 'iife',
+    format: 'umd',
     name: 'nhsdviz',
     exports: 'named',
-  }],
+  }, {
+    file: 'dist/nhsd-dataviz.common.js',
+    format: 'cjs',
+    name: 'nhsdviz',
+  }, {
+    file: 'dist/nhsd-dataviz.esm.js',
+    format: 'es',
+    name: 'nhsdviz',
+  }
+],
   plugins: [
     nodeResolve(),
     typescript(),
