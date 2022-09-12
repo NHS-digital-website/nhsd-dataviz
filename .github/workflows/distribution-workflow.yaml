@@ -16,6 +16,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
+          token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
       # Set Node.js version
       - name: Request Node Version
@@ -45,7 +46,7 @@ jobs:
           git commit -m "${{ github.event.release.tag_name }}"
           git push
         env:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
       # Store CDN distribution workflow artifacts
       - name: Archive dist artifacts
