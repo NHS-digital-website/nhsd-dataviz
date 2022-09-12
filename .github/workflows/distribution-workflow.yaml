@@ -14,6 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
 
       # Set Node.js version
