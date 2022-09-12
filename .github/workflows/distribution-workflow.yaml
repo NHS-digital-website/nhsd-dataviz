@@ -40,7 +40,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # push the version changes to GitHub
-      - run: git push
+      - run: |
+          git add .
+          git commit -m "${{ github.event.release.tag_name }}"
+          git push
         env:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
