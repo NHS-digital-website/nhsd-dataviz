@@ -14,7 +14,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          ref: ${{ github.event.release.target_commitish }}
 
       # Set Node.js version
       - name: Request Node Version
@@ -39,7 +40,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # push the version changes to GitHub
-      - run: git push
+      - run: |
+          git add .
+          git commit -m "${{ github.event.release.tag_name }}"
+          git push
         env:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
