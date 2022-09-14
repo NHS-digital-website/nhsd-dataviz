@@ -25,17 +25,29 @@ jobs:
           node-version: '14.17.6'
           registry-url: https://registry.npmjs.org/
 
-      - run: npm ci
-
       # set up git since we will later push to the repo
       - run: git config --global user.name "GitHub CD bot"
       - run: git config --global user.email "lee.jacobson1@nhs.net"
+
+      - run: npm ci
 
       - run: npm --no-git-tag-version version ${{ github.event.release.tag_name }}
 
       # build the project
       - run: npm run build
 
+      # Store CDN distribution workflow artifacts
+      - name: Archive dist artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: cdn-dist
+          path: |
+            dist/
+
+  publish-latest:
+    if: ${{ !contains(github.event.release.tag_name, '-rc.') }}
+    needs: build
+    steps:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -48,10 +60,18 @@ jobs:
         env:
           github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
-      # Store CDN distribution workflow artifacts
-      - name: Archive dist artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: cdn-dist
-          path: |
-            dist/
+  publish-next:
+    if: contains(github.event.release.tag_name, '-rc.')
+    needs: build
+    steps:
+      - run: npm publish --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # push the version changes to GitHub
+      - run: |
+          git add .
+          git commit -m "${{ github.event.release.tag_name }}"
+          git push
+        env:
+          github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
