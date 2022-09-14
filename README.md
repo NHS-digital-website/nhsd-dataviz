@@ -71,6 +71,7 @@ nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 | data              | <a href="#dataObject">Data object</a>                | Chart data                               |
 | source            | { text: String, href: String }                       | Source text                              |
 | palette           | String                                               | Chart palette                            |
+| icon              | String (<a href="#icons">icon name</a>)              | Chart icon                               |
 | desktopViewport   | number (px)                                          | Desktop viewport (default: 1024)         |
 
 ### <a name="dataObject" href="#dataObject">#</a> Data object
@@ -87,7 +88,23 @@ nhsdviz.chart(<i>selector</i>, <i><a href="#optionsObject">options</a></i>)
 | quantity     | number                                          | Chart quantity value (stat)          |
 | series       | { name: string, value: [number] }               | Chart series data (column)           |
 
-### Examples
+### <a name="icons" href="#icons">#</a> Supported icons 
+
+If building from source icons should be placed in the `assets/icons/` directory, these icons can then be referenced by their file names.
+
+If using the distribution library the following icons are avaliable:
+
+- `arrow-down`
+- `arrow-up`
+- `calendar`
+- `invite`
+- `person`
+- `tooth`
+- `wine-glass`
+
+--------
+
+## Examples
 
 #### Pie Chart
 https://jsfiddle.net/LEJA3/cq8rbs12/
@@ -104,6 +121,7 @@ https://jsfiddle.net/LEJA3/rov9weby/
 #### Column Chart
 https://jsfiddle.net/LEJA3/fqtphz7o/
 
+--------
 ## Colour palette
 
 nhsdviz.createPalette(<i>name</i>, <i><a href="#paletteObject">palette</a></i>)

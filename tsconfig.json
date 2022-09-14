@@ -13,5 +13,6 @@
     ],
     "target": "ES2015"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "files": ["./types/globals.d.ts"]
 }

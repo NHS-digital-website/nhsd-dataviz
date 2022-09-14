@@ -282,7 +282,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
             right: '6%',
             bottom: '6%',
 
-            '& .nhsd-viz-default-icon, & img': {
+            '& .nhsd-viz-default-icon, & img, & svg': {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
@@ -290,6 +290,9 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
             '& .nhsd-viz-default-icon': {
               borderRadius: '5%',
               background: palette.primary,
+            },
+            '& svg': {
+              fill: palette.primary,
             },
             '& .nhsd-viz-icon-mask': {
               position: 'absolute',

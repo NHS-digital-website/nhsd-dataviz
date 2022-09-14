@@ -3,6 +3,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import svgImporter from "./svg-importer";
 
 const removeCircularDependencyWarning = function ( message ) {
   if (message.code === 'CIRCULAR_DEPENDENCY') {
@@ -28,9 +29,10 @@ export default [{
       preventAssignment: true,
     }),
     terser(),
+    svgImporter(),
   ],
   onwarn: removeCircularDependencyWarning,
-},{
+}, {
   input: 'src/dataviz.ts',
   output: [{
     file: 'dist/nhsd-dataviz.js',
@@ -55,6 +57,7 @@ export default [{
       preventAssignment: true,
     }),
     commonjs(),
+    svgImporter(),
   ],
   onwarn: removeCircularDependencyWarning,
 }];
