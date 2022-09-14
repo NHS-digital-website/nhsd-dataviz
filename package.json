@@ -1,9 +1,10 @@
 {
   "name": "nhsd-dataviz",
-  "version": "1.0.7",
+  "version": "1.0.8-rc.4",
   "description": "NHS Digital's Data Visualisation Library",
   "scripts": {
-    "build": "rollup -c rollup.config.js"
+    "build": "rollup -c rollup.config.js",
+    "prepare": "npm run build"
   },
   "author": "NHS Digital",
   "license": "ISC",
