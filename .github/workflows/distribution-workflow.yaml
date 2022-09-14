@@ -46,6 +46,7 @@ jobs:
             dist/
 
   publish-latest:
+    runs-on: ubuntu-latest
     if: ${{ !contains(github.ref_name, '-rc.') }}
     needs: build
     steps:
@@ -62,6 +63,7 @@ jobs:
           github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
   publish-next:
+    runs-on: ubuntu-latest
     if: contains(github.ref_name, '-rc.')
     needs: build
     steps:
