@@ -1,8 +1,9 @@
 name: Distribution Workflow
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -15,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: ${{ github.event.release.target_commitish }}
+          ref: ${{ github.ref }}
           token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
       # Set Node.js version
@@ -31,7 +32,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm --no-git-tag-version version ${{ github.event.release.tag_name }}
+      - run: npm --no-git-tag-version version ${{ github.ref_name }}
 
       # build the project
       - run: npm run build
@@ -45,7 +46,7 @@ jobs:
             dist/
 
   publish-latest:
-    if: ${{ !contains(github.event.release.tag_name, '-rc.') }}
+    if: ${{ !contains(github.ref_name, '-rc.') }}
     needs: build
     steps:
       - run: npm publish
@@ -55,13 +56,13 @@ jobs:
       # push the version changes to GitHub
       - run: |
           git add .
-          git commit -m "${{ github.event.release.tag_name }}"
+          git commit -m "${{ github.ref_name }}"
           git push
         env:
           github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
 
   publish-next:
-    if: contains(github.event.release.tag_name, '-rc.')
+    if: contains(github.ref_name, '-rc.')
     needs: build
     steps:
       - run: npm publish --tag next
@@ -71,7 +72,7 @@ jobs:
       # push the version changes to GitHub
       - run: |
           git add .
-          git commit -m "${{ github.event.release.tag_name }}"
+          git commit -m "${{ github.ref_name }}"
           git push
         env:
           github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
