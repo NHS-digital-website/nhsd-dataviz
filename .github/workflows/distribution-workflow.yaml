@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -45,29 +45,15 @@ jobs:
           path: |
             dist/
 
-  publish-latest:
-    runs-on: ubuntu-latest
-    if: ${{ !contains(github.ref_name, '-rc.') }}
-    needs: build
-    steps:
-      - run: npm publish
+      - name: Publish Latest
+        if: ${{ !contains(github.ref_name, '-rc.') }}
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # push the version changes to GitHub
-      - run: |
-          git add .
-          git commit -m "${{ github.ref_name }}"
-          git push
-        env:
-          github-token: ${{ secrets.RELEASE_BOT_TOKEN }}
-
-  publish-next:
-    runs-on: ubuntu-latest
-    if: contains(github.ref_name, '-rc.')
-    needs: build
-    steps:
-      - run: npm publish --tag next
+      - name: Publish Next
+        if: ${{ contains(github.ref_name, '-rc.') }}
+        run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
