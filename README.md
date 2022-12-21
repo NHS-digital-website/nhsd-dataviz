@@ -10,7 +10,7 @@ The purpose of this library is create accessible data visualisations for web wit
 
 ### Download the latest release
 
-To you can download the latest releases on the [release page.](https://github.com/NHS-digital-website/nhsd-dataviz/releases).
+To you can download the latest releases on the [release page](https://github.com/NHS-digital-website/nhsd-dataviz/releases).
 
 ### Build from source
 
