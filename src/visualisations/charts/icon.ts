@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import isMobile from "../../helpers/is-mobile";
 import { VisualisationFullOptions, RatioData } from "../../options";
+import icons from '../../../assets/icons/*.svg';
 
 export interface IconOptions extends VisualisationFullOptions {
   vizType: "icon",
@@ -37,14 +38,11 @@ export default async function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLE
     }
   }
 
-  let iconImg = null;
-  if (options.icon) {
-    try {
-      iconImg = await d3.image(options.icon);
-    } catch(e) {
-      console.error(e);
-      iconImg = null;
-    }
+  let iconImg: string = null;
+  if (options.icon && icons[options.icon]) {
+    iconImg = icons[options.icon];
+  } else {
+    iconImg = null;
   }
 
   const iconWrapper = vizChart.insert('div')
@@ -60,8 +58,7 @@ export default async function(vizChart: d3.Selection<d3.BaseType, unknown, HTMLE
     .classed('nhsd-viz-icon--inactive', i >= numerator);
 
     if (options.icon && iconImg) {
-      icon.insert('img')
-      .attr('src', iconImg.src);
+      icon.html(iconImg);
     } else {
       icon.insert('div')
       .classed('nhsd-viz-default-icon', true);

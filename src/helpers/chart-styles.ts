@@ -30,6 +30,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
         width: '100%',
         height: '100%',
         fontSize: `${options.fontSize || "1em"}`,
+        lineHeight: '1',
 
         ['& .nhsd-viz-sr-only']: {
           position: 'absolute!important',
@@ -59,7 +60,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
         ['& .nhsd-viz-title']: {
           fontSize: '2.6em',
           margin: 0,
-          marginBottom: '0.2em',
+          marginBottom: '0.8em',
           color: palette.text,
           textAlign: 'center',
           textTransform: 'uppercase',
@@ -267,6 +268,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
           },
           '& .nhsd-viz-icon-wrapper': {
             position: 'relative',
+            maxWidth: '6em',
 
             '&:before': {
               content: '""',
@@ -282,7 +284,7 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
             right: '6%',
             bottom: '6%',
 
-            '& .nhsd-viz-default-icon, & img': {
+            '& .nhsd-viz-default-icon, & img, & svg': {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
@@ -290,6 +292,9 @@ export default function(target: d3.Selection<d3.BaseType, unknown, HTMLElement, 
             '& .nhsd-viz-default-icon': {
               borderRadius: '5%',
               background: palette.primary,
+            },
+            '& svg': {
+              fill: palette.primary,
             },
             '& .nhsd-viz-icon-mask': {
               position: 'absolute',
