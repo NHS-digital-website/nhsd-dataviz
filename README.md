@@ -2,19 +2,40 @@
 
 This is the repository for NHSD's data visualisation library.
 
-The purpose of this library is create accessible data visualisations for web with HTML/SVG, JPG & PNG fallbacks where JavaScript isn't avaliable.
+The purpose of this library is create accessible data visualisations for the web with HTML/SVG.
 
 --------
 
 ## Getting Started
 
-### Download the latest release
+The easiest way to install the NHSD Data Visualisation Library is with npm.
 
-To you can download the latest releases on the [release page](https://github.com/NHS-digital-website/nhsd-dataviz/releases).
+To install the latest version simply run:
+
+`npm install nhsd-dataviz`
+
+Once installed you can import the library into your project and create a chart:
+
+```javascript
+import { chart } from 'nhsd-dataviz';
+
+chart('#viz', {
+  "introText": "In 2022",
+  "data": {
+    "percent": 18,
+    "subject": "adults",
+    "description": "had a possible eating disorder",
+    "change": {
+      "percent": -3,
+      "date": "2021"
+    }
+  }
+});
+```
 
 ### Build from source
 
-Alternatively you may clone and build your own distribution:
+Alternatively you may clone the project and build your own distribution bundle:
 
 ```
 git clone https://github.com/NHS-digital-website/nhsd-dataviz.git
@@ -22,11 +43,7 @@ npm install
 npm run build
 ```
 
---------
-
-## Usage
-
-The following code snippet demonstrates loading the data visualisation library and creating a basic chart:
+The following code snippet demonstrates loading the data visualisation library using the minified UMD bundle and creating a basic chart:
 
 ```
 <html>
@@ -138,4 +155,36 @@ nhsdviz.createPalette(<i>name</i>, <i><a href="#paletteObject">palette</a></i>)
 
 ### Example
 https://jsfiddle.net/LEJA3/k2tL0pcq/
+
+
+--------------------------
+
+## Creating a release
+
+Before creating a release first ensure your changes have been merge into the `main` branch. You can do this by raising a pull request.
+
+Once your changes have been merged you can draft a release from the [Github releases page](https://github.com/NHS-digital-website/nhsd-dataviz/releases).
+
+First create a tag following [semantic versioning](https://semver.org/) rules prefixed with "v". Eg, "v1.5.2".
+
+You may then title the release and include a description of the changes.
+
+Once release has been published the distribution workflow will create a new npm version from the git tag.
+
+It will then publish the changes to [npm](https://www.npmjs.com/package/nhsd-dataviz) and push an updated `package.json` file containing the latest version number back to `main`.
+
+### Alpha, beta & RC versions
+
+To test changes before creating a release you may want to publish pre-release version to npm.
+
+This can easily be done with the following commands:
+
+First create a non-release version:
+`npm --no-git-tag-version version 1.2.0-rc.1`
+
+Then publish the version to npm using a non-release tag:
+`npm publish --tag beta`
+
+Once pulished you can install the version from your project with npm:
+`npm install nhsd-dataviz@1.2.0-rc.1`
 
